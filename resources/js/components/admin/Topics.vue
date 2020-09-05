@@ -31,7 +31,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(topic,index) in topics" :key="topic.topic_id">
+                                <tr v-for="(topic,index) in topics.data" :key="topic.topic_id">
                                     <td>{{index + 1}}</td>
                                     <td>{{topic.topic_name}}</td>
                                     <td>
@@ -47,7 +47,10 @@
                         </table>
                     </div>
                     <div class="card-footer d-flex justify-content-center">
-                        
+                        <pagination :data="topics" @pagination-change-page="getResults">
+                            <span slot="prev-nav">&lt; Previous</span>
+	                        <span slot="next-nav">Next &gt;</span>
+                        </pagination>
                     </div>
                 </div>
             </div>
@@ -174,7 +177,13 @@
                 })
             },
             loadTopics(){
-                axios.get('api/topic').then(({ data }) => (this.topics = data.data));
+                axios.get('api/topic').then(({ data }) => (this.topics = data));
+            },
+            getResults(page = 1){
+                axios.get('api/topic?page=' + page)
+				.then(response => {
+					this.topics = response.data;
+				});
             }
         },
         created() {
