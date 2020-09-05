@@ -13,9 +13,9 @@
                         </div>
                         <div class="float-right">
                             <div class="input-group input-group-sm">
-                                <input type="text" name="search" class="form-control float-right" placeholder="Search">
+                                <input type="text" name="search" v-model="search" @keyup="searchit" class="form-control float-right" placeholder="Search">
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <button type="submit" @click="searchit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -93,6 +93,7 @@
             return{
                 editmode: false,
                 topics: {},
+                search: '',
                 form: new Form({
                     topic_id: '',
                     topic_name: ''
@@ -184,9 +185,22 @@
 				.then(response => {
 					this.topics = response.data;
 				});
-            }
+            },
+            searchit:_.debounce(() => {
+                Fire.$emit('searching');
+            },1000)
         },
         created() {
+            Fire.$on('searching',() => {
+                let query = this.search;
+                axios.get('api/findTopic?q=' + query)
+                .then((data) => {
+                    this.topics = data.data
+                })
+                .catch(() => {
+
+                })
+            })
             this.loadTopics();
         }
     }

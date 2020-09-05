@@ -2052,6 +2052,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       editmode: false,
       topics: {},
+      search: '',
       form: new Form({
         topic_id: '',
         topic_name: ''
@@ -2148,9 +2149,20 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('api/topic?page=' + page).then(function (response) {
         _this5.topics = response.data;
       });
-    }
+    },
+    searchit: _.debounce(function () {
+      Fire.$emit('searching');
+    }, 1000)
   },
   created: function created() {
+    var _this6 = this;
+
+    Fire.$on('searching', function () {
+      var query = _this6.search;
+      axios.get('api/findTopic?q=' + query).then(function (data) {
+        _this6.topics = data.data;
+      })["catch"](function () {});
+    });
     this.loadTopics();
   }
 });
@@ -42606,12 +42618,53 @@ var render = function() {
               )
             ]),
             _vm._v(" "),
-            _vm._m(1)
+            _c("div", { staticClass: "float-right" }, [
+              _c("div", { staticClass: "input-group input-group-sm" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.search,
+                      expression: "search"
+                    }
+                  ],
+                  staticClass: "form-control float-right",
+                  attrs: {
+                    type: "text",
+                    name: "search",
+                    placeholder: "Search"
+                  },
+                  domProps: { value: _vm.search },
+                  on: {
+                    keyup: _vm.searchit,
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.search = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "input-group-append" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-default",
+                      attrs: { type: "submit" },
+                      on: { click: _vm.searchit }
+                    },
+                    [_c("i", { staticClass: "fas fa-search" })]
+                  )
+                ])
+              ])
+            ])
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body table-responsive p-0" }, [
             _c("table", { staticClass: "table table-hover text-nowrap" }, [
-              _vm._m(2),
+              _vm._m(1),
               _vm._v(" "),
               _c(
                 "tbody",
@@ -42720,7 +42773,7 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _vm._m(3)
+              _vm._m(2)
             ]),
             _vm._v(" "),
             _c(
@@ -42825,27 +42878,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-sm-6" }, [
       _c("h1", [_vm._v("Topics")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "float-right" }, [
-      _c("div", { staticClass: "input-group input-group-sm" }, [
-        _c("input", {
-          staticClass: "form-control float-right",
-          attrs: { type: "text", name: "search", placeholder: "Search" }
-        }),
-        _vm._v(" "),
-        _c("div", { staticClass: "input-group-append" }, [
-          _c(
-            "button",
-            { staticClass: "btn btn-default", attrs: { type: "submit" } },
-            [_c("i", { staticClass: "fas fa-search" })]
-          )
-        ])
-      ])
     ])
   },
   function() {
@@ -58187,6 +58219,7 @@ var toast = sweetalert2__WEBPACK_IMPORTED_MODULE_3___default.a.mixin({
 });
 window.toast = toast;
 Vue.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
+window.Fire = new Vue();
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

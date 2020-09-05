@@ -74,4 +74,17 @@ class TopicController extends Controller
         return Topic::where('topic_id', $id)
                     ->update(['topic_status' => 0]);
     }
+    public function search(){
+        if ($search = \Request::get('q')) {
+            $topics = Topic::where(function($query) use ($search){
+                $query->where([['topic_name','LIKE',"%$search%"],['topic_status','=','1']]);
+            })->latest()->paginate(10);
+        }else{
+            $topics = Topic::where('topic_status',1)
+                                ->latest()
+                                ->paginate(10);
+        }
+
+        return $topics;
+    }
 }
