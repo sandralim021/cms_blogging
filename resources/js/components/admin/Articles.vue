@@ -55,7 +55,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form class="form-horizontal" @submit.prevent="editmode ? updateArticle() : createArtocle()">
+                    <form class="form-horizontal" @submit.prevent="editmode ? updateArticle() : createArticle()">
                         <div class="modal-body">
                             <div class="form-group row">
                                 <label for="title" class="col-sm-2 col-form-label">Title</label>
@@ -66,9 +66,22 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="Content" class="col-sm-2 col-form-label">Content</label>
+                                <label for="topic" class="col-sm-2 col-form-label">Topic</label>
+                                <div class="col-sm-5">
+                                     <select v-model="form.topic" class="form-control" name="topic" :class="{ 'is-invalid': form.errors.has('topic') }">
+                                        <option value="">Select Topic</option>
+                                        <option v-for="topic in topics" :key="topic.topic_id" :value="topic.topic_id">
+                                            {{ topic.topic_name }}
+                                        </option>
+                                    </select>
+                                    <has-error :form="form" field="topic"></has-error>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="content" class="col-sm-2 col-form-label">Content</label>
                                 <div class="col-sm-10">
-                                    <textarea class="textarea" placeholder="Place some text here"></textarea>
+                                     <quill-editor v-model="form.content" :options="editorOption" style="height: 350px; padding-bottom: 75px;"></quill-editor>
+                                     <has-error :form="form" field="content"></has-error>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -101,20 +114,30 @@
 </template>
 
 <script>
+    import 'quill/dist/quill.snow.css'
+    import { quillEditor } from 'vue-quill-editor'
     export default {
         data(){
             return{
+                editorOption: {
+                    placeholder: 'Write something fantastic...',
+                },
                 editmode: false,
                 articles: {},
+                topics: '',
                 search: '',
                 form: new Form({
                     article_id: '',
                     title: '',
-                    content: '',
+                    topic: '',
+                    content: null,
                     photo: '',
                     article_status: ''
                 })
             }
+        },
+        components: {
+            quillEditor
         },
         methods: {
             newModal(){
@@ -122,22 +145,35 @@
                 this.form.clear();
                 this.form.reset();
                 $('#article_modal').modal('show');      
+            },
+            loadTopics(){
+                axios.get('api/get_topics')
+                    .then((response) => {
+                       this.topics = response.data;
+                    })
+            },
+            createArticle(){
+                this.$Progress.start();
+                this.form.post('api/article')
+                .then(()=>{
+                    $('#article_modal').modal('hide');
+                    toast.fire({
+                        icon: 'success',
+                        title: 'Article Created Successfully'
+                    });
+                    this.$Progress.finish();
+                })
+                .catch(()=>{
+                    this.$Progress.fail();
+                })
             }
         },
         mounted() {
-           $('.textarea').summernote({
-                toolbar: [
-                    [ 'style', [ 'style' ] ],
-                    [ 'font', [ 'bold', 'italic', 'underline', 'clear'] ],
-                    [ 'fontname', [ 'fontname' ] ],
-                    [ 'fontsize', [ 'fontsize' ] ],
-                    [ 'color', [ 'color' ] ],
-                    [ 'para', [ 'ol', 'ul', 'paragraph', 'height' ] ],
-                    [ 'table', [ 'table' ] ],
-                    [ 'insert', [ 'link'] ],
-                    [ 'view', [ 'undo', 'redo', 'codeview', 'help' ] ]
-                ]
-           });
+           
+          
+        },
+        created() {
+            this.loadTopics();
         }
     }
 </script>

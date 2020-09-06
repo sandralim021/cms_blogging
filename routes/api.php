@@ -19,7 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResources([
-    'topic' => 'API\TopicController'
+    'topic' => 'API\TopicController',
+    'article' => 'API\ArticleController'
 ]);
-
+//Topic
 Route::get('findTopic', 'API\TopicController@search');
+//Article
+Route::get('get_topics', 'API\ArticleController@get_topics');

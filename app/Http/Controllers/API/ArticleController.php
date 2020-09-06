@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Article;
+use App\Topic;
+
 
 class ArticleController extends Controller
 {
@@ -16,6 +19,11 @@ class ArticleController extends Controller
     {
         //
     }
+    public function get_topics(){
+        return Topic::where('topic_status',1)
+                    ->orderBy('topic_name','ASC')
+                    ->get(['topic_id','topic_name']);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -25,7 +33,20 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'title' => 'required|string',
+            'topic' => 'required',
+            'content' => 'required',
+            'article_status' => 'required'
+        ]);
+        return Article::create([
+            'title' => $request['title'],
+            'user_id' => \Auth::id(),
+            'topic_id' => $request['topic'],
+            'content' => $request['content'],
+            'article_status' => $request['article_status'] 
+
+        ]);
     }
 
     /**

@@ -17,6 +17,7 @@ class CreateArticlesTable extends Migration
             $table->increments('article_id');
             $table->string('title');
             $table->integer('user_id');
+            $table->string('topic_id');
             $table->text('content');
             $table->string('photo')->default('article_default.png');
             $table->tinyInteger('article_status');
