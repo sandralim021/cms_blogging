@@ -6,13 +6,15 @@
 
 require('./bootstrap');
 
+
 window.Vue = require('vue');
 
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 let routes = [
-    { path: '/topics', component: require('./components/admin/Topics.vue').default}
+    { path: '/topics', component: require('./components/admin/Topics.vue').default},
+    { path: '/articles', component: require('./components/admin/Articles.vue').default}
 ]
 
 const router = new VueRouter({
