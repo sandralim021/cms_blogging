@@ -45,7 +45,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <img src="./img/person.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">{{ Auth::user()->name }}</a>
         </div>
       </div>
 
@@ -63,6 +63,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
           </li>
           <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-edit"></i>
+              <p>
+                Authors
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <router-link to="/topics" class="nav-link" active-class="active" exact>
               <i class="nav-icon fas fa-comments"></i>
               <p>
@@ -72,9 +80,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-edit"></i>
+              <i class="nav-icon fas fa-newspaper"></i>
               <p>
-                Posts
+                Articles
               </p>
             </a>
           </li>

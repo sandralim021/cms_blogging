@@ -27,6 +27,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Topic</th>
+                                    <th>Status</th>
                                     <th>Modify</th>
                                 </tr>
                             </thead>
@@ -34,6 +35,12 @@
                                 <tr v-for="(topic,index) in topics.data" :key="topic.topic_id">
                                     <td>{{index + 1}}</td>
                                     <td>{{topic.topic_name}}</td>
+                                    <td v-if="topic.topic_status == '0'">
+                                        <span class="badge bg-danger">Not Active</span>
+                                    </td>
+                                    <td v-else>
+                                        <span class="badge bg-success">Active</span>
+                                    </td>
                                     <td>
                                         <a href="#" @click="editModal(topic)" class="btn btn-sm btn-warning">
                                             <i class="fa fa-edit"></i>
@@ -65,7 +72,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form @submit.prevent="editmode ? updateTopic() : createTopic()">
+                    <form class="form-horizontal" @submit.prevent="editmode ? updateTopic() : createTopic()">
                         <div class="modal-body">
                             <div class="form-group row">
                                 <label for="topic_name" class="col-sm-3 col-form-label">Topic Name</label>
@@ -73,6 +80,17 @@
                                     <input v-model="form.topic_name" type="text" name="topic_name" placeholder="Enter Topic Name" class="form-control"
                                         :class="{ 'is-invalid': form.errors.has('topic_name') }">
                                     <has-error :form="form" field="topic_name"></has-error>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="topic_status" class="col-sm-3 col-form-label">Status</label>
+                                <div class="col-sm-8">
+                                    <select v-model="form.topic_status" class="form-control" name="topic_status" :class="{ 'is-invalid': form.errors.has('topic_status') }">
+                                        <option value="">Select Status</option>
+                                        <option value="0">Not Active</option>
+                                        <option value="1">Active</option>
+                                    </select>
+                                     <has-error :form="form" field="topic_status"></has-error>
                                 </div>
                             </div>
                         </div>
@@ -96,7 +114,8 @@
                 search: '',
                 form: new Form({
                     topic_id: '',
-                    topic_name: ''
+                    topic_name: '',
+                    topic_status: ''
                 })
             }
         },

@@ -2047,6 +2047,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2055,7 +2073,8 @@ __webpack_require__.r(__webpack_exports__);
       search: '',
       form: new Form({
         topic_id: '',
-        topic_name: ''
+        topic_name: '',
+        topic_status: ''
       })
     };
   },
@@ -42674,6 +42693,18 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(topic.topic_name))]),
                     _vm._v(" "),
+                    topic.topic_status == "0"
+                      ? _c("td", [
+                          _c("span", { staticClass: "badge bg-danger" }, [
+                            _vm._v("Not Active")
+                          ])
+                        ])
+                      : _c("td", [
+                          _c("span", { staticClass: "badge bg-success" }, [
+                            _vm._v("Active")
+                          ])
+                        ]),
+                    _vm._v(" "),
                     _c("td", [
                       _c(
                         "a",
@@ -42779,6 +42810,7 @@ var render = function() {
             _c(
               "form",
               {
+                staticClass: "form-horizontal",
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
@@ -42841,6 +42873,79 @@ var render = function() {
                       ],
                       1
                     )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-3 col-form-label",
+                        attrs: { for: "topic_status" }
+                      },
+                      [_vm._v("Status")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "col-sm-8" },
+                      [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.topic_status,
+                                expression: "form.topic_status"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.form.errors.has("topic_status")
+                            },
+                            attrs: { name: "topic_status" },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.$set(
+                                  _vm.form,
+                                  "topic_status",
+                                  $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                )
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("Select Status")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Not Active")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "1" } }, [
+                              _vm._v("Active")
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "topic_status" }
+                        })
+                      ],
+                      1
+                    )
                   ])
                 ]),
                 _vm._v(" "),
@@ -42889,6 +42994,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("#")]),
         _vm._v(" "),
         _c("th", [_vm._v("Topic")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")]),
         _vm._v(" "),
         _c("th", [_vm._v("Modify")])
       ])

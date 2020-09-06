@@ -4,9 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Topic;
 
-class TopicController extends Controller
+class ArticleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +14,7 @@ class TopicController extends Controller
      */
     public function index()
     {
-        return Topic::latest()
-                    ->paginate(10);
+        //
     }
 
     /**
@@ -27,14 +25,7 @@ class TopicController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'topic_name' => 'required|string',
-            'topic_status' => 'required'
-        ]);
-        return Topic::create([
-            'topic_name' => $request['topic_name'],
-            'topic_status' => $request['topic_status']
-        ]);
+        //
     }
 
     /**
@@ -57,12 +48,7 @@ class TopicController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
-            'topic_name' => 'required|string',
-            'topic_status' => 'required'
-        ]);
-
-        return Topic::where('topic_id', $id)->update($request->all());
+        //
     }
 
     /**
@@ -73,19 +59,6 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
-        $topic = Topic::findOrFail($id);
-        return $topic->delete();
-    }
-    public function search(){
-        if ($search = \Request::get('q')) {
-            $topics = Topic::where(function($query) use ($search){
-                $query->where('topic_name','LIKE',"%$search%");
-            })->latest()->paginate(10);
-        }else{
-            $topics = Topic::latest()
-                            ->paginate(10);
-        }
-
-        return $topics;
+        //
     }
 }
