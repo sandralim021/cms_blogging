@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Article;
 use App\Topic;
+use App\User;
 
 
 class ArticleController extends Controller
@@ -33,6 +34,7 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth('api')->user();
         $this->validate($request,[
             'title' => 'required|string',
             'topic' => 'required',
@@ -41,7 +43,7 @@ class ArticleController extends Controller
         ]);
         return Article::create([
             'title' => $request['title'],
-            'user_id' => \Auth::id(),
+            'user_id' => $user->id,
             'topic_id' => $request['topic'],
             'content' => $request['content'],
             'article_status' => $request['article_status'] 

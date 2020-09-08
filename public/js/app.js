@@ -2093,7 +2093,7 @@ __webpack_require__.r(__webpack_exports__);
         article_id: '',
         title: '',
         topic: '',
-        content: null,
+        content: '',
         photo: '',
         article_status: ''
       })
@@ -57332,11 +57332,17 @@ var render = function() {
                         { staticClass: "col-sm-10" },
                         [
                           _c("quill-editor", {
+                            class: {
+                              "is-invalid": _vm.form.errors.has("topic")
+                            },
                             staticStyle: {
                               height: "350px",
                               "padding-bottom": "75px"
                             },
-                            attrs: { options: _vm.editorOption },
+                            attrs: {
+                              name: "content",
+                              options: _vm.editorOption
+                            },
                             model: {
                               value: _vm.form.content,
                               callback: function($$v) {

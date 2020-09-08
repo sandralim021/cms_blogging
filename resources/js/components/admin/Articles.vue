@@ -80,7 +80,7 @@
                             <div class="form-group row">
                                 <label for="content" class="col-sm-2 col-form-label">Content</label>
                                 <div class="col-sm-10">
-                                     <quill-editor v-model="form.content" :options="editorOption" style="height: 350px; padding-bottom: 75px;"></quill-editor>
+                                     <quill-editor v-model="form.content" name="content" :class="{ 'is-invalid': form.errors.has('topic') }" :options="editorOption" style="height: 350px; padding-bottom: 75px;"></quill-editor>
                                      <has-error :form="form" field="content"></has-error>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                     article_id: '',
                     title: '',
                     topic: '',
-                    content: null,
+                    content: '',
                     photo: '',
                     article_status: ''
                 })
