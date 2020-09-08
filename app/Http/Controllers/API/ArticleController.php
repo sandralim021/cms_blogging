@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Article;
 use App\Topic;
 use App\User;
@@ -18,7 +19,11 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        //
+        return  DB::table('articles')
+                    ->join('topics','articles.topic_id', '=', 'topics.topic_id')
+                    ->select('articles.*','topics.topic_name')
+                    ->latest()
+                    ->paginate(10);
     }
     public function get_topics(){
         return Topic::where('topic_status',1)
@@ -41,13 +46,22 @@ class ArticleController extends Controller
             'content' => 'required',
             'article_status' => 'required'
         ]);
+        if($request->photo){
+            $extension = explode('/', mime_content_type($request->photo))[1];
+            $name = time().'.'.$extension;
+    
+            \Image::make($request->photo)->save(public_path('img/article_photos/').$name);
+            $request->merge(['photo' => $name]);
+        }else{
+            $request->merge(['photo' => 'article_default.png']);
+        }
         return Article::create([
             'title' => $request['title'],
             'user_id' => $user->id,
             'topic_id' => $request['topic'],
             'content' => $request['content'],
+            'photo' => $request['photo'],
             'article_status' => $request['article_status'] 
-
         ]);
     }
 

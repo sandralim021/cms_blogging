@@ -2077,8 +2077,42 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
+Vue.filter('striphtml', function (value) {
+  var div = document.createElement("div");
+  div.innerHTML = value;
+  var text = div.textContent || div.innerText || "";
+  var final_value = '';
+
+  if (text.length < 15) {
+    final_value = text;
+  } else {
+    final_value = text.substring(0, 15) + "...";
+  }
+
+  return final_value;
+});
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2116,8 +2150,16 @@ __webpack_require__.r(__webpack_exports__);
         _this.topics = response.data;
       });
     },
-    createArticle: function createArticle() {
+    loadArticles: function loadArticles() {
       var _this2 = this;
+
+      axios.get('api/article').then(function (_ref) {
+        var data = _ref.data;
+        return _this2.articles = data.data;
+      });
+    },
+    createArticle: function createArticle() {
+      var _this3 = this;
 
       this.$Progress.start();
       this.form.post('api/article').then(function () {
@@ -2127,15 +2169,40 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Article Created Successfully'
         });
 
-        _this2.$Progress.finish();
+        _this3.$Progress.finish();
       })["catch"](function () {
-        _this2.$Progress.fail();
+        _this3.$Progress.fail();
       });
+    },
+    editModal: function editModal(article) {
+      this.editmode = true;
+      this.form.clear();
+      this.form.reset();
+      $('#article_modal').modal('show');
+      this.form.fill(article);
+    },
+    pictureAction: function pictureAction(e) {
+      var _this4 = this;
+
+      var file = e.target.files[0];
+      var reader = new FileReader();
+      console.log(file);
+
+      if (file['type'] === 'image/jpeg' || file['type'] === 'image/png') {
+        reader.onloadend = function (file) {
+          _this4.form.photo = reader.result;
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        swal.fire('Failed!', 'Should be image file (.png / .jpg)', 'error');
+      }
     }
   },
   mounted: function mounted() {},
   created: function created() {
     this.loadTopics();
+    this.loadArticles();
   }
 });
 
@@ -57122,7 +57189,70 @@ var render = function() {
             _vm._m(1)
           ]),
           _vm._v(" "),
-          _vm._m(2),
+          _c("div", { staticClass: "card-body table-responsive p-0" }, [
+            _c("table", { staticClass: "table table-hover text-nowrap" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.articles, function(article, index) {
+                  return _c("tr", { key: article.article_id }, [
+                    _c("td", [_vm._v(_vm._s(index + 1))]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v(_vm._s(article.title))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c("img", {
+                        staticClass: "img-fluid",
+                        attrs: {
+                          src: "/img/article_photos/" + article.photo,
+                          width: "50",
+                          height: "50"
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(article.topic_name))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(_vm._s(_vm._f("striphtml")(article.content)))
+                    ]),
+                    _vm._v(" "),
+                    article.article_status == "0"
+                      ? _c("td", [
+                          _c("span", { staticClass: "badge bg-warning" }, [
+                            _vm._v("Draft")
+                          ])
+                        ])
+                      : _c("td", [
+                          _c("span", { staticClass: "badge bg-success" }, [
+                            _vm._v("Published")
+                          ])
+                        ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-sm btn-warning",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.editModal(article)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "fa fa-edit" })]
+                      ),
+                      _vm._v(" "),
+                      _vm._m(3, true)
+                    ])
+                  ])
+                }),
+                0
+              )
+            ])
+          ]),
           _vm._v(" "),
           _c("div", {
             staticClass: "card-footer d-flex justify-content-center"
@@ -57166,7 +57296,7 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                _vm._m(3)
+                _vm._m(4)
               ]),
               _vm._v(" "),
               _c(
@@ -57360,7 +57490,24 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _vm._m(4),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-sm-2 col-form-label",
+                          attrs: { for: "photo" }
+                        },
+                        [_vm._v("Photo")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-5" }, [
+                        _c("input", {
+                          staticClass: "form-input",
+                          attrs: { type: "file", id: "photo", name: "photo" },
+                          on: { change: _vm.pictureAction }
+                        })
+                      ])
+                    ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
                       _c(
@@ -57503,29 +57650,33 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-body table-responsive p-0" }, [
-      _c("table", { staticClass: "table table-hover text-nowrap" }, [
-        _c("thead", [
-          _c("tr", [
-            _c("th", [_vm._v("#")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Title")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Photo")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Topic")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Content")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Status")]),
-            _vm._v(" "),
-            _c("th", [_vm._v("Modify")])
-          ])
-        ]),
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("#")]),
         _vm._v(" "),
-        _c("tbody")
+        _c("th", [_vm._v("Title")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Photo")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Topic")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Content")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Modify")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      { staticClass: "btn btn-sm btn-danger", attrs: { href: "#" } },
+      [_c("i", { staticClass: "fa fa-trash" })]
+    )
   },
   function() {
     var _vm = this
@@ -57543,25 +57694,6 @@ var staticRenderFns = [
       },
       [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row" }, [
-      _c(
-        "label",
-        { staticClass: "col-sm-2 col-form-label", attrs: { for: "photo" } },
-        [_vm._v("Photo")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-sm-5" }, [
-        _c("input", {
-          staticClass: "form-input",
-          attrs: { type: "file", id: "photo", name: "photo" }
-        })
-      ])
-    ])
   }
 ]
 render._withStripped = true

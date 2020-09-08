@@ -35,7 +35,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                                <tr v-for="(article,index) in articles" :key="article.article_id">
+                                    <td>{{index + 1}}</td>
+                                    <th>{{article.title}}</th>
+                                    <td><img :src="'/img/article_photos/'+article.photo" width="50" height="50" class="img-fluid"></td>
+                                    <td>{{article.topic_name}}</td>
+                                    <td>{{article.content | striphtml}}</td>
+                                    <td v-if="article.article_status == '0'">
+                                        <span class="badge bg-warning">Draft</span>
+                                    </td>
+                                    <td v-else>
+                                        <span class="badge bg-success">Published</span>
+                                    </td>
+                                    <td>
+                                        <a href="#" @click="editModal(article)" class="btn btn-sm btn-warning">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-danger">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -87,7 +107,7 @@
                             <div class="form-group row">
                                 <label for="photo" class="col-sm-2 col-form-label">Photo</label>
                                 <div class="col-sm-5">
-                                    <input type="file" id="photo" name="photo" class="form-input">
+                                    <input type="file" id="photo" @change="pictureAction" name="photo" class="form-input">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -116,6 +136,18 @@
 <script>
     import 'quill/dist/quill.snow.css'
     import { quillEditor } from 'vue-quill-editor'
+    Vue.filter('striphtml', function (value) {
+        var div = document.createElement("div");
+        div.innerHTML = value;
+        var text = div.textContent || div.innerText || "";
+        var final_value = '';
+        if(text.length < 15){
+            final_value = text;
+        }else{
+            final_value = text.substring(0,15)+"...";
+        }
+        return final_value;
+    });
     export default {
         data(){
             return{
@@ -152,6 +184,9 @@
                        this.topics = response.data;
                     })
             },
+            loadArticles(){
+                axios.get('api/article').then(({ data }) => (this.articles = data.data));
+            },
             createArticle(){
                 this.$Progress.start();
                 this.form.post('api/article')
@@ -166,6 +201,30 @@
                 .catch(()=>{
                     this.$Progress.fail();
                 })
+            },
+            editModal(article){
+                this.editmode = true;
+                this.form.clear();
+                this.form.reset();
+                $('#article_modal').modal('show');
+                this.form.fill(article);
+            },
+            pictureAction(e){
+                let file = e.target.files[0];
+                var reader = new FileReader();
+                console.log(file);
+                if(file['type'] === 'image/jpeg' || file['type'] === 'image/png'){
+                    reader.onloadend = (file) => {
+                        this.form.photo = reader.result;
+                    }
+                    reader.readAsDataURL(file);
+                }else{
+                    swal.fire(
+                        'Failed!',
+                        'Should be image file (.png / .jpg)',
+                        'error'
+                    )
+                }
             }
         },
         mounted() {
@@ -174,6 +233,7 @@
         },
         created() {
             this.loadTopics();
+            this.loadArticles();
         }
     }
 </script>
