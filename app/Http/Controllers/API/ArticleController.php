@@ -85,7 +85,41 @@ class ArticleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = auth('api')->user();
+
+        $this->validate($request,[
+            'title' => 'required|string',
+            'topic' => 'required',
+            'content' => 'required',
+            'article_status' => 'required'
+        ]);
+        $article = Article::find($id);
+        $currentPhoto = $article->photo;
+        if($request->photo != $currentPhoto){
+            $extension = explode('/', mime_content_type($request->photo))[1];
+            $name = time().'.'.$extension;
+
+            \Image::make($request->photo)->save(public_path('img/article_photos/').$name);
+            $request->merge(['photo' => $name]);
+
+            $articlePhoto = public_path('img/article_photos/').$currentPhoto;
+            if(!($currentPhoto == 'article_default.png')){
+                if(file_exists($articlePhoto)){
+                    @unlink($articlePhoto);
+                }
+            }
+            
+        }
+        else if(empty($request->photo)){
+            $request->merge(['photo' => $currentPhoto]);
+        }
+        return Article::where('article_id', $id)->update([
+            'title' => $request['title'],
+            'topic_id' => $request['topic'],
+            'content' => $request['content'],
+            'photo' => $request['photo'],
+            'article_status' => $request['article_status']
+        ]);
     }
 
     /**
@@ -96,6 +130,13 @@ class ArticleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $article = Article::findOrFail($id);
+        $articlePhoto = public_path('img/article_photos/').$article->photo;
+        if(!($article->photo == 'article_default.png')){
+            if(file_exists($articlePhoto)){
+                @unlink($articlePhoto);
+            }
+        }
+        return $article->delete();
     }
 }

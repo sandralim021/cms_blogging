@@ -2097,6 +2097,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 Vue.filter('striphtml', function (value) {
@@ -2105,10 +2111,10 @@ Vue.filter('striphtml', function (value) {
   var text = div.textContent || div.innerText || "";
   var final_value = '';
 
-  if (text.length < 15) {
+  if (text.length < 25) {
     final_value = text;
   } else {
-    final_value = text.substring(0, 15) + "...";
+    final_value = text.substring(0, 25) + "...";
   }
 
   return final_value;
@@ -2129,6 +2135,7 @@ Vue.filter('striphtml', function (value) {
         topic: '',
         content: '',
         photo: '',
+        current_photo: '',
         article_status: ''
       })
     };
@@ -2141,6 +2148,7 @@ Vue.filter('striphtml', function (value) {
       this.editmode = false;
       this.form.clear();
       this.form.reset();
+      $('#photo').val('');
       $('#article_modal').modal('show');
     },
     loadTopics: function loadTopics() {
@@ -2169,6 +2177,8 @@ Vue.filter('striphtml', function (value) {
           title: 'Article Created Successfully'
         });
 
+        _this3.loadArticles();
+
         _this3.$Progress.finish();
       })["catch"](function () {
         _this3.$Progress.fail();
@@ -2179,10 +2189,59 @@ Vue.filter('striphtml', function (value) {
       this.form.clear();
       this.form.reset();
       $('#article_modal').modal('show');
-      this.form.fill(article);
+      this.form.article_id = article.article_id;
+      this.form.title = article.title;
+      this.form.topic = article.topic_id;
+      this.form.content = article.content;
+      this.form.current_photo = article.photo;
+      this.form.photo = article.photo;
+      this.form.article_status = article.article_status;
+    },
+    updateArticle: function updateArticle() {
+      var _this4 = this;
+
+      this.$Progress.start();
+      this.form.put('api/article/' + this.form.article_id).then(function () {
+        $('#article_modal').modal('hide');
+        toast.fire({
+          icon: 'success',
+          title: 'Article Updated Successfully'
+        });
+
+        _this4.loadArticles();
+
+        _this4.$Progress.finish();
+      })["catch"](function () {
+        //Failed
+        _this4.$Progress.fail();
+      });
+    },
+    deleteArticle: function deleteArticle(id) {
+      var _this5 = this;
+
+      swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.value) {
+          // Send Request To The Server
+          _this5.form["delete"]('api/article/' + id).then(function () {
+            swal.fire('Deleted!', 'Record has been deleted.', 'success');
+
+            _this5.loadArticles();
+          })["catch"](function () {
+            swal.fire('Failed!', 'Error while deleting the user information', 'warning');
+          });
+        }
+      });
     },
     pictureAction: function pictureAction(e) {
-      var _this4 = this;
+      var _this6 = this;
 
       var file = e.target.files[0];
       var reader = new FileReader();
@@ -2190,7 +2249,7 @@ Vue.filter('striphtml', function (value) {
 
       if (file['type'] === 'image/jpeg' || file['type'] === 'image/png') {
         reader.onloadend = function (file) {
-          _this4.form.photo = reader.result;
+          _this6.form.photo = reader.result;
         };
 
         reader.readAsDataURL(file);
@@ -57245,7 +57304,19 @@ var render = function() {
                         [_c("i", { staticClass: "fa fa-edit" })]
                       ),
                       _vm._v(" "),
-                      _vm._m(3, true)
+                      _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-sm btn-danger",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteArticle(article.article_id)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "fa fa-trash" })]
+                      )
                     ])
                   ])
                 }),
@@ -57290,13 +57361,13 @@ var render = function() {
                       _vm._s(
                         _vm.editmode
                           ? "Update Article Information"
-                          : "Add New Topic"
+                          : "Add New Article"
                       )
                     )
                   ]
                 ),
                 _vm._v(" "),
-                _vm._m(4)
+                _vm._m(3)
               ]),
               _vm._v(" "),
               _c(
@@ -57361,6 +57432,55 @@ var render = function() {
                         ],
                         1
                       )
+                    ]),
+                    _vm._v(" "),
+                    _vm.editmode === true
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-sm-2 col-form-label",
+                              attrs: { for: "photo" }
+                            },
+                            [_vm._v("Photo Preview")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-sm-5" }, [
+                            _c("img", {
+                              staticClass: "img-fluid",
+                              attrs: {
+                                src:
+                                  "/img/article_photos/" +
+                                  _vm.form.current_photo,
+                                width: "150",
+                                height: "150"
+                              }
+                            })
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-sm-2 col-form-label",
+                          attrs: { for: "photo" }
+                        },
+                        [
+                          _vm._v(
+                            _vm._s(_vm.editmode ? "Update Photo" : "Photo")
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-sm-5" }, [
+                        _c("input", {
+                          staticClass: "form-input",
+                          attrs: { type: "file", id: "photo", name: "photo" },
+                          on: { change: _vm.pictureAction }
+                        })
+                      ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
@@ -57488,25 +57608,6 @@ var render = function() {
                         ],
                         1
                       )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-sm-2 col-form-label",
-                          attrs: { for: "photo" }
-                        },
-                        [_vm._v("Photo")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-sm-5" }, [
-                        _c("input", {
-                          staticClass: "form-input",
-                          attrs: { type: "file", id: "photo", name: "photo" },
-                          on: { change: _vm.pictureAction }
-                        })
-                      ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
@@ -57667,16 +57768,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Modify")])
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "a",
-      { staticClass: "btn btn-sm btn-danger", attrs: { href: "#" } },
-      [_c("i", { staticClass: "fa fa-trash" })]
-    )
   },
   function() {
     var _vm = this

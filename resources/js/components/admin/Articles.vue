@@ -51,7 +51,7 @@
                                         <a href="#" @click="editModal(article)" class="btn btn-sm btn-warning">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a href="#" class="btn btn-sm btn-danger">
+                                        <a href="#" @click="deleteArticle(article.article_id)" class="btn btn-sm btn-danger">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>
@@ -70,7 +70,7 @@
             <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="article_modalLabel">{{ editmode ? 'Update Article Information' : 'Add New Topic'}}</h5>
+                        <h5 class="modal-title" id="article_modalLabel">{{ editmode ? 'Update Article Information' : 'Add New Article'}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -83,6 +83,18 @@
                                      <input v-model="form.title" type="text" name="title" placeholder="Enter Title" class="form-control"
                                         :class="{ 'is-invalid': form.errors.has('title') }">
                                     <has-error :form="form" field="title"></has-error>
+                                </div>
+                            </div>
+                            <div class="form-group row" v-if="editmode===true">
+                                <label for="photo" class="col-sm-2 col-form-label">Photo Preview</label>
+                                <div class="col-sm-5">
+                                    <img :src="'/img/article_photos/'+form.current_photo" width="150" height="150" class="img-fluid">
+                                </div>
+                            </div>
+                             <div class="form-group row">
+                                <label for="photo" class="col-sm-2 col-form-label">{{editmode ? 'Update Photo' : 'Photo'}}</label>
+                                <div class="col-sm-5">
+                                    <input type="file" id="photo" @change="pictureAction" name="photo" class="form-input">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -102,12 +114,6 @@
                                 <div class="col-sm-10">
                                      <quill-editor v-model="form.content" name="content" :class="{ 'is-invalid': form.errors.has('topic') }" :options="editorOption" style="height: 350px; padding-bottom: 75px;"></quill-editor>
                                      <has-error :form="form" field="content"></has-error>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="photo" class="col-sm-2 col-form-label">Photo</label>
-                                <div class="col-sm-5">
-                                    <input type="file" id="photo" @change="pictureAction" name="photo" class="form-input">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -141,10 +147,10 @@
         div.innerHTML = value;
         var text = div.textContent || div.innerText || "";
         var final_value = '';
-        if(text.length < 15){
+        if(text.length < 25){
             final_value = text;
         }else{
-            final_value = text.substring(0,15)+"...";
+            final_value = text.substring(0,25)+"...";
         }
         return final_value;
     });
@@ -164,6 +170,7 @@
                     topic: '',
                     content: '',
                     photo: '',
+                    current_photo: '',
                     article_status: ''
                 })
             }
@@ -176,6 +183,7 @@
                 this.editmode = false;
                 this.form.clear();
                 this.form.reset();
+                $('#photo').val('');
                 $('#article_modal').modal('show');      
             },
             loadTopics(){
@@ -196,6 +204,7 @@
                         icon: 'success',
                         title: 'Article Created Successfully'
                     });
+                    this.loadArticles();
                     this.$Progress.finish();
                 })
                 .catch(()=>{
@@ -207,7 +216,60 @@
                 this.form.clear();
                 this.form.reset();
                 $('#article_modal').modal('show');
-                this.form.fill(article);
+                this.form.article_id = article.article_id;
+                this.form.title = article.title;
+                this.form.topic = article.topic_id;
+                this.form.content = article.content;
+                this.form.current_photo = article.photo;
+                this.form.photo = article.photo;
+                this.form.article_status = article.article_status;
+            },
+            updateArticle(){
+                this.$Progress.start();
+                this.form.put('api/article/'+this.form.article_id)
+                .then(()=>{
+                    $('#article_modal').modal('hide');
+                    toast.fire({
+                        icon: 'success',
+                        title: 'Article Updated Successfully'
+                    });
+                    this.loadArticles();
+                    this.$Progress.finish();
+                })
+                .catch(()=>{
+                    //Failed
+                    this.$Progress.fail();
+                })
+            },
+            deleteArticle(id){
+                swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.value) {
+                        // Send Request To The Server
+                        this.form.delete('api/article/'+id).then(() =>{
+                            swal.fire(
+                                'Deleted!',
+                                'Record has been deleted.',
+                                'success'
+                            )
+                            this.loadArticles();
+                        }).catch(()=>{
+                            swal.fire(
+                                'Failed!',
+                                'Error while deleting the user information',
+                                'warning'
+                            )
+                        })
+                    }
+                    
+                })
             },
             pictureAction(e){
                 let file = e.target.files[0];
