@@ -128,8 +128,7 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id){
         $article = Article::findOrFail($id);
         $articlePhoto = public_path('img/article_photos/').$article->photo;
         if(!($article->photo == 'article_default.png')){
@@ -138,5 +137,25 @@ class ArticleController extends Controller
             }
         }
         return $article->delete();
+    }
+    public function search(){
+        if ($search = \Request::get('q')) {
+            $articles = DB::table('articles')
+                            ->join('topics','articles.topic_id', '=', 'topics.topic_id')
+                            ->select('articles.*','topics.topic_name')
+                            ->where(function($query) use ($search){
+                                $query->where('articles.title','LIKE',"%$search%")
+                                    ->orWhere('topics.topic_name','LIKE',"%$search%")
+                                    ->orWhere('articles.content','LIKE',"%$search%");
+                            })->latest()->paginate(10);
+        }else{
+            $articles = DB::table('articles')
+                            ->join('topics','articles.topic_id', '=', 'topics.topic_id')
+                            ->select('articles.*','topics.topic_name')
+                            ->latest()
+                            ->paginate(10);
+        }
+
+        return $articles;
     }
 }

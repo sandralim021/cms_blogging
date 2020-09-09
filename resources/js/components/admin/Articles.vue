@@ -13,9 +13,9 @@
                         </div>
                         <div class="float-right">
                             <div class="input-group input-group-sm">
-                                <input type="text" name="search" class="form-control float-right" placeholder="Search">
+                                <input type="text" name="search" v-model="search" @keyup="searchit" class="form-control float-right" placeholder="Search">
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <button type="submit" @click="searchit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(article,index) in articles" :key="article.article_id">
+                                <tr v-for="(article,index) in articles.data" :key="article.article_id">
                                     <td>{{index + 1}}</td>
                                     <th>{{article.title}}</th>
                                     <td><img :src="'/img/article_photos/'+article.photo" width="50" height="50" class="img-fluid"></td>
@@ -60,7 +60,10 @@
                         </table>
                     </div>
                     <div class="card-footer d-flex justify-content-center">
-                       
+                       <pagination :data="articles" @pagination-change-page="getResults">
+                            <span slot="prev-nav">&lt; Previous</span>
+	                        <span slot="next-nav">Next &gt;</span>
+                        </pagination>
                     </div>
                 </div>
             </div>
@@ -193,7 +196,13 @@
                     })
             },
             loadArticles(){
-                axios.get('api/article').then(({ data }) => (this.articles = data.data));
+                axios.get('api/article').then(({ data }) => (this.articles = data));
+            },
+            getResults(page = 1){
+                axios.get('api/article?page=' + page)
+				.then(response => {
+					this.articles = response.data;
+				});
             },
             createArticle(){
                 this.$Progress.start();
@@ -287,13 +296,22 @@
                         'error'
                     )
                 }
-            }
-        },
-        mounted() {
-           
-          
+            },
+            searchit:_.debounce(() => {
+                Fire.$emit('searching');
+            },1000)
         },
         created() {
+            Fire.$on('searching',() => {
+                let query = this.search;
+                axios.get('api/findArticle?q=' + query)
+                .then((data) => {
+                    this.articles = data.data
+                })
+                .catch(() => {
+
+                })
+            })
             this.loadTopics();
             this.loadArticles();
         }

@@ -2103,6 +2103,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 Vue.filter('striphtml', function (value) {
@@ -2163,11 +2166,19 @@ Vue.filter('striphtml', function (value) {
 
       axios.get('api/article').then(function (_ref) {
         var data = _ref.data;
-        return _this2.articles = data.data;
+        return _this2.articles = data;
+      });
+    },
+    getResults: function getResults() {
+      var _this3 = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get('api/article?page=' + page).then(function (response) {
+        _this3.articles = response.data;
       });
     },
     createArticle: function createArticle() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$Progress.start();
       this.form.post('api/article').then(function () {
@@ -2177,11 +2188,11 @@ Vue.filter('striphtml', function (value) {
           title: 'Article Created Successfully'
         });
 
-        _this3.loadArticles();
+        _this4.loadArticles();
 
-        _this3.$Progress.finish();
+        _this4.$Progress.finish();
       })["catch"](function () {
-        _this3.$Progress.fail();
+        _this4.$Progress.fail();
       });
     },
     editModal: function editModal(article) {
@@ -2198,7 +2209,7 @@ Vue.filter('striphtml', function (value) {
       this.form.article_status = article.article_status;
     },
     updateArticle: function updateArticle() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.$Progress.start();
       this.form.put('api/article/' + this.form.article_id).then(function () {
@@ -2208,16 +2219,16 @@ Vue.filter('striphtml', function (value) {
           title: 'Article Updated Successfully'
         });
 
-        _this4.loadArticles();
+        _this5.loadArticles();
 
-        _this4.$Progress.finish();
+        _this5.$Progress.finish();
       })["catch"](function () {
         //Failed
-        _this4.$Progress.fail();
+        _this5.$Progress.fail();
       });
     },
     deleteArticle: function deleteArticle(id) {
-      var _this5 = this;
+      var _this6 = this;
 
       swal.fire({
         title: 'Are you sure?',
@@ -2230,10 +2241,10 @@ Vue.filter('striphtml', function (value) {
       }).then(function (result) {
         if (result.value) {
           // Send Request To The Server
-          _this5.form["delete"]('api/article/' + id).then(function () {
+          _this6.form["delete"]('api/article/' + id).then(function () {
             swal.fire('Deleted!', 'Record has been deleted.', 'success');
 
-            _this5.loadArticles();
+            _this6.loadArticles();
           })["catch"](function () {
             swal.fire('Failed!', 'Error while deleting the user information', 'warning');
           });
@@ -2241,7 +2252,7 @@ Vue.filter('striphtml', function (value) {
       });
     },
     pictureAction: function pictureAction(e) {
-      var _this6 = this;
+      var _this7 = this;
 
       var file = e.target.files[0];
       var reader = new FileReader();
@@ -2249,17 +2260,27 @@ Vue.filter('striphtml', function (value) {
 
       if (file['type'] === 'image/jpeg' || file['type'] === 'image/png') {
         reader.onloadend = function (file) {
-          _this6.form.photo = reader.result;
+          _this7.form.photo = reader.result;
         };
 
         reader.readAsDataURL(file);
       } else {
         swal.fire('Failed!', 'Should be image file (.png / .jpg)', 'error');
       }
-    }
+    },
+    searchit: _.debounce(function () {
+      Fire.$emit('searching');
+    }, 1000)
   },
-  mounted: function mounted() {},
   created: function created() {
+    var _this8 = this;
+
+    Fire.$on('searching', function () {
+      var query = _this8.search;
+      axios.get('api/findArticle?q=' + query).then(function (data) {
+        _this8.articles = data.data;
+      })["catch"](function () {});
+    });
     this.loadTopics();
     this.loadArticles();
   }
@@ -57245,16 +57266,57 @@ var render = function() {
               )
             ]),
             _vm._v(" "),
-            _vm._m(1)
+            _c("div", { staticClass: "float-right" }, [
+              _c("div", { staticClass: "input-group input-group-sm" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.search,
+                      expression: "search"
+                    }
+                  ],
+                  staticClass: "form-control float-right",
+                  attrs: {
+                    type: "text",
+                    name: "search",
+                    placeholder: "Search"
+                  },
+                  domProps: { value: _vm.search },
+                  on: {
+                    keyup: _vm.searchit,
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.search = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "input-group-append" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-default",
+                      attrs: { type: "submit" },
+                      on: { click: _vm.searchit }
+                    },
+                    [_c("i", { staticClass: "fas fa-search" })]
+                  )
+                ])
+              ])
+            ])
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body table-responsive p-0" }, [
             _c("table", { staticClass: "table table-hover text-nowrap" }, [
-              _vm._m(2),
+              _vm._m(1),
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.articles, function(article, index) {
+                _vm._l(_vm.articles.data, function(article, index) {
                   return _c("tr", { key: article.article_id }, [
                     _c("td", [_vm._v(_vm._s(index + 1))]),
                     _vm._v(" "),
@@ -57325,9 +57387,33 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
-          _c("div", {
-            staticClass: "card-footer d-flex justify-content-center"
-          })
+          _c(
+            "div",
+            { staticClass: "card-footer d-flex justify-content-center" },
+            [
+              _c(
+                "pagination",
+                {
+                  attrs: { data: _vm.articles },
+                  on: { "pagination-change-page": _vm.getResults }
+                },
+                [
+                  _c(
+                    "span",
+                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                    [_vm._v("< Previous")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                    [_vm._v("Next >")]
+                  )
+                ]
+              )
+            ],
+            1
+          )
         ])
       ])
     ]),
@@ -57367,7 +57453,7 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                _vm._m(3)
+                _vm._m(2)
               ]),
               _vm._v(" "),
               _c(
@@ -57548,9 +57634,9 @@ var render = function() {
                                   },
                                   [
                                     _vm._v(
-                                      "\n                                        " +
+                                      "\n                                            " +
                                         _vm._s(topic.topic_name) +
-                                        "\n                                    "
+                                        "\n                                        "
                                     )
                                   ]
                                 )
@@ -57724,27 +57810,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-sm-6" }, [
       _c("h1", [_vm._v("Articles")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "float-right" }, [
-      _c("div", { staticClass: "input-group input-group-sm" }, [
-        _c("input", {
-          staticClass: "form-control float-right",
-          attrs: { type: "text", name: "search", placeholder: "Search" }
-        }),
-        _vm._v(" "),
-        _c("div", { staticClass: "input-group-append" }, [
-          _c(
-            "button",
-            { staticClass: "btn btn-default", attrs: { type: "submit" } },
-            [_c("i", { staticClass: "fas fa-search" })]
-          )
-        ])
-      ])
     ])
   },
   function() {
