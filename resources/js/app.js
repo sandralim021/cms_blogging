@@ -15,7 +15,8 @@ Vue.use(VueRouter)
 let routes = [
     { path: '/authors', component: require('./components/admin/Authors.vue').default},
     { path: '/topics', component: require('./components/admin/Topics.vue').default},
-    { path: '/articles', component: require('./components/admin/Articles.vue').default}
+    { path: '/articles', component: require('./components/admin/Articles.vue').default},
+    { path: '/profile', component: require('./components/admin/Profile.vue').default}
 ]
 
 const router = new VueRouter({
