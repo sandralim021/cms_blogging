@@ -93,25 +93,21 @@ class ArticleController extends Controller
             'content' => 'required',
             'article_status' => 'required'
         ]);
-        $article = Article::find($id);
-        $currentPhoto = $article->photo;
-        if($request->photo != $currentPhoto){
+        $current_photo = $request->current_photo;
+        if($request->photo != $current_photo){
             $extension = explode('/', mime_content_type($request->photo))[1];
             $name = time().'.'.$extension;
 
             \Image::make($request->photo)->save(public_path('img/article_photos/').$name);
             $request->merge(['photo' => $name]);
 
-            $articlePhoto = public_path('img/article_photos/').$currentPhoto;
-            if(!($currentPhoto == 'article_default.png')){
+            $articlePhoto = public_path('img/article_photos/').$current_photo;
+            if(!($current_photo == 'article_default.png')){
                 if(file_exists($articlePhoto)){
                     @unlink($articlePhoto);
                 }
             }
             
-        }
-        else if(empty($request->photo)){
-            $request->merge(['photo' => $currentPhoto]);
         }
         return Article::where('article_id', $id)->update([
             'title' => $request['title'],

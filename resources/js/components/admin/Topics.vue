@@ -188,7 +188,7 @@
                         }).catch(()=>{
                             swal.fire(
                                 'Failed!',
-                                'Error while deleting the user information',
+                                'Error while deleting the topic information',
                                 'warning'
                             )
                         })

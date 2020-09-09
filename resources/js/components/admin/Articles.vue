@@ -224,6 +224,7 @@
                 this.editmode = true;
                 this.form.clear();
                 this.form.reset();
+                $('#photo').val('');
                 $('#article_modal').modal('show');
                 this.form.article_id = article.article_id;
                 this.form.title = article.title;
@@ -234,6 +235,10 @@
                 this.form.article_status = article.article_status;
             },
             updateArticle(){
+                var photo = $('#photo').val();
+                if(photo == ""){
+                    this.form.photo = this.form.current_photo;
+                }
                 this.$Progress.start();
                 this.form.put('api/article/'+this.form.article_id)
                 .then(()=>{
@@ -272,7 +277,7 @@
                         }).catch(()=>{
                             swal.fire(
                                 'Failed!',
-                                'Error while deleting the user information',
+                                'Error while deleting the article information',
                                 'warning'
                             )
                         })

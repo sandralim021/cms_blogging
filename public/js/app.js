@@ -2199,6 +2199,7 @@ Vue.filter('striphtml', function (value) {
       this.editmode = true;
       this.form.clear();
       this.form.reset();
+      $('#photo').val('');
       $('#article_modal').modal('show');
       this.form.article_id = article.article_id;
       this.form.title = article.title;
@@ -2210,6 +2211,12 @@ Vue.filter('striphtml', function (value) {
     },
     updateArticle: function updateArticle() {
       var _this5 = this;
+
+      var photo = $('#photo').val();
+
+      if (photo == "") {
+        this.form.photo = this.form.current_photo;
+      }
 
       this.$Progress.start();
       this.form.put('api/article/' + this.form.article_id).then(function () {
@@ -2246,7 +2253,7 @@ Vue.filter('striphtml', function (value) {
 
             _this6.loadArticles();
           })["catch"](function () {
-            swal.fire('Failed!', 'Error while deleting the user information', 'warning');
+            swal.fire('Failed!', 'Error while deleting the article information', 'warning');
           });
         }
       });
@@ -2419,11 +2426,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2460,7 +2462,7 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Author Created Successfully'
         });
 
-        _this.loadArticles();
+        _this.loadAuthors();
 
         _this.$Progress.finish();
       })["catch"](function () {
@@ -2479,15 +2481,67 @@ __webpack_require__.r(__webpack_exports__);
       this.editmode = true;
       this.form.clear();
       this.form.reset();
+      $('#photo').val('');
       $('#author_modal').modal('show');
       this.form.id = author.id;
       this.form.name = author.name;
       this.form.email = author.email;
+      this.form.photo = author.photo;
       this.form.current_photo = author.photo;
       this.form.password = author.password;
     },
-    pictureAction: function pictureAction(e) {
+    updateAuthor: function updateAuthor() {
       var _this3 = this;
+
+      var photo = $('#photo').val();
+      var password = $('#password').val();
+
+      if (photo == "") {
+        this.form.photo = this.form.current_photo;
+      }
+
+      this.$Progress.start();
+      this.form.put('api/author/' + this.form.id).then(function () {
+        $('#author_modal').modal('hide');
+        toast.fire({
+          icon: 'success',
+          title: 'Author Updated Successfully'
+        });
+
+        _this3.loadAuthors();
+
+        _this3.$Progress.finish();
+      })["catch"](function () {
+        //Failed
+        _this3.$Progress.fail();
+      });
+    },
+    deleteAuthor: function deleteAuthor(id) {
+      var _this4 = this;
+
+      swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.value) {
+          // Send Request To The Server
+          _this4.form["delete"]('api/author/' + id).then(function () {
+            swal.fire('Deleted!', 'Record has been deleted.', 'success');
+
+            _this4.loadAuthors();
+          })["catch"](function () {
+            swal.fire('Failed!', 'Error while deleting the author information', 'warning');
+          });
+        }
+      });
+    },
+    pictureAction: function pictureAction(e) {
+      var _this5 = this;
 
       var file = e.target.files[0];
       var reader = new FileReader();
@@ -2495,7 +2549,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (file['type'] === 'image/jpeg' || file['type'] === 'image/png') {
         reader.onloadend = function (file) {
-          _this3.form.photo = reader.result;
+          _this5.form.photo = reader.result;
         };
 
         reader.readAsDataURL(file);
@@ -2711,7 +2765,7 @@ __webpack_require__.r(__webpack_exports__);
 
             _this3.loadTopics();
           })["catch"](function () {
-            swal.fire('Failed!', 'Error while deleting the user information', 'warning');
+            swal.fire('Failed!', 'Error while deleting the topic information', 'warning');
           });
         }
       });
@@ -58372,22 +58426,26 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm.editmode === false
-                    ? _c("div", { staticClass: "form-group row" }, [
-                        _c(
-                          "label",
-                          {
-                            staticClass: "col-sm-2 col-form-label",
-                            attrs: { for: "password" }
-                          },
-                          [_vm._v("Password")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "div",
-                          { staticClass: "col-sm-8" },
-                          [
-                            _c("input", {
+                  _c("div", { staticClass: "form-group row" }, [
+                    _c(
+                      "label",
+                      {
+                        staticClass: "col-sm-2 col-form-label",
+                        attrs: { for: "password" }
+                      },
+                      [
+                        _vm._v(
+                          _vm._s(_vm.editmode ? "Update Password" : "Password")
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "col-sm-8" },
+                      [
+                        _vm.editmode == false
+                          ? _c("input", {
                               directives: [
                                 {
                                   name: "model",
@@ -58403,7 +58461,7 @@ var render = function() {
                               attrs: {
                                 type: "password",
                                 name: "password",
-                                placeholder: "Enter Password"
+                                placeholder: "Enter password"
                               },
                               domProps: { value: _vm.form.password },
                               on: {
@@ -58418,33 +58476,15 @@ var render = function() {
                                   )
                                 }
                               }
-                            }),
-                            _vm._v(" "),
-                            _c("has-error", {
-                              attrs: { form: _vm.form, field: "password" }
                             })
-                          ],
-                          1
-                        )
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _vm.editmode === true
-                    ? _c("div", { staticClass: "form-group row" }, [
-                        _c(
-                          "label",
-                          {
-                            staticClass: "col-sm-2 col-form-label",
-                            attrs: { for: "password" }
-                          },
-                          [_vm._v("Update Password")]
-                        ),
+                          : _vm._e(),
                         _vm._v(" "),
-                        _c(
-                          "div",
-                          { staticClass: "col-sm-8" },
-                          [
-                            _c("input", {
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "password" }
+                        }),
+                        _vm._v(" "),
+                        _vm.editmode == true
+                          ? _c("input", {
                               directives: [
                                 {
                                   name: "model",
@@ -58460,7 +58500,7 @@ var render = function() {
                                 )
                               },
                               attrs: {
-                                type: "password",
+                                type: "updated_password",
                                 name: "updated_password",
                                 placeholder: "(Leave Empty If Not Changing)"
                               },
@@ -58477,19 +58517,16 @@ var render = function() {
                                   )
                                 }
                               }
-                            }),
-                            _vm._v(" "),
-                            _c("has-error", {
-                              attrs: {
-                                form: _vm.form,
-                                field: "updated_password"
-                              }
                             })
-                          ],
-                          1
-                        )
-                      ])
-                    : _vm._e()
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("has-error", {
+                          attrs: { form: _vm.form, field: "updated_password" }
+                        })
+                      ],
+                      1
+                    )
+                  ])
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-footer" }, [

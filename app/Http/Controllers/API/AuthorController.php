@@ -71,7 +71,35 @@ class AuthorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request,[
+            'name' => 'required|string',
+            'email' => 'required|unique:users,email,'.$id,
+            'password' => 'required'
+        ]);
+        $current_photo = $request->current_photo;
+        if($request->photo != $current_photo){
+            $extension = explode('/', mime_content_type($request->photo))[1];
+            $name = time().'.'.$extension;
+
+            \Image::make($request->photo)->save(public_path('img/user_photos/').$name);
+            $request->merge(['photo' => $name]);
+
+            $authorPhoto = public_path('img/user_photos/').$current_photo;
+            if(!($current_photo == 'user_default.png')){
+                if(file_exists($authorPhoto)){
+                    @unlink($authorPhoto);
+                }
+            }
+            
+        }
+        if($request->updated_password != ""){
+            return Author::where('id', $id)->update(['password' => Hash::make($request['password'])]);
+        }
+        return Author::where('id', $id)->update([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'photo' => $request['photo']
+        ]);
     }
 
     /**
@@ -82,6 +110,13 @@ class AuthorController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $author = Author::findOrFail($id);
+        $authorPhoto = public_path('img/user_photos/').$author->photo;
+        if(!($author->photo == 'user_default.png')){
+            if(file_exists($authorPhoto)){
+                @unlink($authorPhoto);
+            }
+        }
+        return $author->delete();
     }
 }

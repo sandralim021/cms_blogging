@@ -96,18 +96,13 @@
                                     <input type="file" id="photo" @change="pictureAction" name="photo" class="form-input">
                                 </div>
                             </div>
-                            <div v-if="editmode===false" class="form-group row">
-                                <label for="password" class="col-sm-2 col-form-label">Password</label>
+                            <div class="form-group row">
+                                <label for="password" class="col-sm-2 col-form-label">{{editmode ? 'Update Password' : 'Password'}}</label>
                                 <div class="col-sm-8">
-                                    <input v-model="form.password" type="password" name="password" placeholder="Enter Password" class="form-control"
+                                    <input v-if="editmode==false" v-model="form.password" type="password" name="password" placeholder="Enter password" class="form-control"
                                         :class="{ 'is-invalid': form.errors.has('password') }">
                                     <has-error :form="form" field="password"></has-error>
-                                </div>
-                            </div>
-                            <div v-if="editmode===true" class="form-group row">
-                                <label for="password" class="col-sm-2 col-form-label">Update Password</label>
-                                <div class="col-sm-8">
-                                    <input v-model="form.updated_password" type="password" name="updated_password" placeholder="(Leave Empty If Not Changing)" class="form-control"
+                                    <input v-if="editmode==true" v-model="form.updated_password" type="updated_password" name="updated_password" placeholder="(Leave Empty If Not Changing)" class="form-control"
                                         :class="{ 'is-invalid': form.errors.has('updated_password') }">
                                     <has-error :form="form" field="updated_password"></has-error>
                                 </div>
@@ -159,7 +154,7 @@
                         icon: 'success',
                         title: 'Author Created Successfully'
                     });
-                    this.loadArticles();
+                    this.loadAuthors();
                     this.$Progress.finish();
                 })
                 .catch(()=>{
@@ -173,12 +168,67 @@
                 this.editmode = true;
                 this.form.clear();
                 this.form.reset();
+                $('#photo').val('');
                 $('#author_modal').modal('show');
                 this.form.id = author.id;
                 this.form.name = author.name;
                 this.form.email = author.email;
+                this.form.photo = author.photo;
                 this.form.current_photo = author.photo;
                 this.form.password = author.password;
+
+            },
+            updateAuthor(){
+                var photo = $('#photo').val();
+                var password = $('#password').val();
+                if(photo == ""){
+                    this.form.photo = this.form.current_photo;
+                }
+                this.$Progress.start();
+                this.form.put('api/author/'+this.form.id)
+                .then(()=>{
+                    $('#author_modal').modal('hide');
+                    toast.fire({
+                        icon: 'success',
+                        title: 'Author Updated Successfully'
+                    });
+                    this.loadAuthors();
+                    this.$Progress.finish();
+                })
+                .catch(()=>{
+                    //Failed
+                    this.$Progress.fail();
+                })
+            },
+            deleteAuthor(id){
+                swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.value) {
+                        // Send Request To The Server
+                        this.form.delete('api/author/'+id).then(() =>{
+                            swal.fire(
+                                'Deleted!',
+                                'Record has been deleted.',
+                                'success'
+                            )
+                            this.loadAuthors();
+                        }).catch(()=>{
+                            swal.fire(
+                                'Failed!',
+                                'Error while deleting the author information',
+                                'warning'
+                            )
+                        })
+                    }
+                    
+                })
             },
             pictureAction(e){
                 let file = e.target.files[0];
