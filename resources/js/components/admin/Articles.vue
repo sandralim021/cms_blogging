@@ -91,10 +91,10 @@
                             <div class="form-group row" v-if="editmode===true">
                                 <label for="photo" class="col-sm-2 col-form-label">Photo Preview</label>
                                 <div class="col-sm-5">
-                                    <img :src="'/img/article_photos/'+form.current_photo" width="150" height="150" class="img-fluid">
+                                    <img :src="'/img/article_photos/'+form.current_photo" width="150" height="150" class="img-round">
                                 </div>
                             </div>
-                             <div class="form-group row">
+                            <div class="form-group row">
                                 <label for="photo" class="col-sm-2 col-form-label">{{editmode ? 'Update Photo' : 'Photo'}}</label>
                                 <div class="col-sm-5">
                                     <input type="file" id="photo" @change="pictureAction" name="photo" class="form-input">
@@ -295,6 +295,7 @@
                         'Should be image file (.png / .jpg)',
                         'error'
                     )
+                    $('#photo').val('');
                 }
             },
             searchit:_.debounce(() => {

@@ -13,6 +13,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 let routes = [
+    { path: '/authors', component: require('./components/admin/Authors.vue').default},
     { path: '/topics', component: require('./components/admin/Topics.vue').default},
     { path: '/articles', component: require('./components/admin/Articles.vue').default}
 ]

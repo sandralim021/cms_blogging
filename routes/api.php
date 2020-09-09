@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['middleware' => 'auth:api'], function() {
     Route::apiResources([
+        'author' => 'API\AuthorController',
         'topic' => 'API\TopicController',
         'article' => 'API\ArticleController'
     ]);

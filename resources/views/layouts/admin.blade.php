@@ -63,12 +63,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <router-link to="/authors" class="nav-link" active-class="active" exact>
               <i class="nav-icon fas fa-edit"></i>
               <p>
                 Authors
               </p>
-            </a>
+            </router-link>
           </li>
           <li class="nav-item">
             <router-link to="/topics" class="nav-link" active-class="active" exact>
