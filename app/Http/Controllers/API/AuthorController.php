@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Author;
+use App\User;
 
 class AuthorController extends Controller
 {
@@ -16,7 +16,8 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        return Author::where('role','author')
+        return User::where('role','author')
+                    ->latest()
                     ->paginate(10);
     }
 
@@ -30,7 +31,7 @@ class AuthorController extends Controller
     {
         $this->validate($request,[
             'name' => 'required|string',
-            'email' => 'required|unique:users',
+            'email' => 'required|email|unique:users',
             'password' => 'required'
         ]);
         if($request->photo){
@@ -42,7 +43,7 @@ class AuthorController extends Controller
         }else{
             $request->merge(['photo' => 'user_default.png']);
         }
-        return Author::create([
+        return User::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'role' => 'author',
@@ -73,8 +74,7 @@ class AuthorController extends Controller
     {
         $this->validate($request,[
             'name' => 'required|string',
-            'email' => 'required|unique:users,email,'.$id,
-            'password' => 'required'
+            'email' => 'required|email|unique:users,email,'.$id,
         ]);
         $current_photo = $request->current_photo;
         if($request->photo != $current_photo){
@@ -93,9 +93,9 @@ class AuthorController extends Controller
             
         }
         if($request->updated_password != ""){
-            return Author::where('id', $id)->update(['password' => Hash::make($request['password'])]);
+            return User::where('id', $id)->update(['password' => Hash::make($request['password'])]);
         }
-        return Author::where('id', $id)->update([
+        return User::where('id', $id)->update([
             'name' => $request['name'],
             'email' => $request['email'],
             'photo' => $request['photo']
@@ -110,7 +110,7 @@ class AuthorController extends Controller
      */
     public function destroy($id)
     {
-        $author = Author::findOrFail($id);
+        $author = User::findOrFail($id);
         $authorPhoto = public_path('img/user_photos/').$author->photo;
         if(!($author->photo == 'user_default.png')){
             if(file_exists($authorPhoto)){
@@ -118,5 +118,20 @@ class AuthorController extends Controller
             }
         }
         return $author->delete();
+    }
+
+    public function search(){
+        if ($search = \Request::get('q')) {
+            $authors = User::where(function($query) use ($search){
+                $query->where([['name','LIKE',"%$search%"],['role','author']])
+                        ->orWhere([['email','LIKE',"%$search%"],['role','author']]);
+            })->paginate(10);
+        }else{
+            $authors = User::where('role','author')
+                            ->latest()
+                            ->paginate(10);
+        }
+
+        return $authors;
     }
 }

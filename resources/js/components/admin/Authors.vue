@@ -13,9 +13,9 @@
                         </div>
                         <div class="float-right">
                             <div class="input-group input-group-sm">
-                                <input type="text" name="search" class="form-control float-right" placeholder="Search">
+                                <input type="text" name="search" v-model="search" @keyup="searchit" class="form-control float-right" placeholder="Search">
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <button type="submit" @click="searchit" class="btn btn-default"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +51,10 @@
                         </table>
                     </div>
                     <div class="card-footer d-flex justify-content-center">
-                        
+                        <pagination :data="authors" @pagination-change-page="getResults">
+                            <span slot="prev-nav">&lt; Previous</span>
+                            <span slot="next-nav">Next &gt;</span>
+                        </pagination>
                     </div>
                 </div>
             </div>
@@ -66,7 +69,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form class="form-horizontal" @submit.prevent="editmode ? updateAuthor() : createAuthor()">
+                    <form class="form-horizontal" @submit.prevent="editmode ? updateAuthor() : createAuthor()" novalidate>
                         <div class="modal-body">
                             <div class="form-group row">
                                 <label for="name" class="col-sm-2 col-form-label">Name</label>
@@ -102,7 +105,7 @@
                                     <input v-if="editmode==false" v-model="form.password" type="password" name="password" placeholder="Enter password" class="form-control"
                                         :class="{ 'is-invalid': form.errors.has('password') }">
                                     <has-error :form="form" field="password"></has-error>
-                                    <input v-if="editmode==true" v-model="form.updated_password" type="updated_password" name="updated_password" placeholder="(Leave Empty If Not Changing)" class="form-control"
+                                    <input v-if="editmode==true" v-model="form.updated_password" type="password" name="updated_password" placeholder="(Leave Empty If Not Changing)" class="form-control"
                                         :class="{ 'is-invalid': form.errors.has('updated_password') }">
                                     <has-error :form="form" field="updated_password"></has-error>
                                 </div>
@@ -163,6 +166,12 @@
             },
             loadAuthors(){
                 axios.get('api/author').then(({ data }) => (this.authors = data));
+            },
+            getResults(page = 1){
+                axios.get('api/author?page=' + page)
+				.then(response => {
+					this.authors = response.data;
+				});
             },
             editModal(author){
                 this.editmode = true;
@@ -247,9 +256,22 @@
                     )
                     $('#photo').val('');
                 }
-            }
+            },
+            searchit:_.debounce(() => {
+                Fire.$emit('searching');
+            },1000)
         },
         created() {
+            Fire.$on('searching',() => {
+                let query = this.search;
+                axios.get('api/findAuthor?q=' + query)
+                .then((data) => {
+                    this.authors = data.data
+                })
+                .catch(() => {
+
+                })
+            })
             this.loadAuthors();
         }
     }

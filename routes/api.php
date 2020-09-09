@@ -29,5 +29,6 @@ Route::group(['middleware' => 'auth:api'], function() {
 //Search
 Route::get('findTopic', 'API\TopicController@search');
 Route::get('findArticle', 'API\ArticleController@search');
+Route::get('findAuthor', 'API\AuthorController@search');
 //Article
 Route::get('get_topics', 'API\ArticleController@get_topics');

@@ -2426,6 +2426,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2477,6 +2480,14 @@ __webpack_require__.r(__webpack_exports__);
         return _this2.authors = data;
       });
     },
+    getResults: function getResults() {
+      var _this3 = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios.get('api/author?page=' + page).then(function (response) {
+        _this3.authors = response.data;
+      });
+    },
     editModal: function editModal(author) {
       this.editmode = true;
       this.form.clear();
@@ -2491,7 +2502,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.password = author.password;
     },
     updateAuthor: function updateAuthor() {
-      var _this3 = this;
+      var _this4 = this;
 
       var photo = $('#photo').val();
       var password = $('#password').val();
@@ -2508,16 +2519,16 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Author Updated Successfully'
         });
 
-        _this3.loadAuthors();
+        _this4.loadAuthors();
 
-        _this3.$Progress.finish();
+        _this4.$Progress.finish();
       })["catch"](function () {
         //Failed
-        _this3.$Progress.fail();
+        _this4.$Progress.fail();
       });
     },
     deleteAuthor: function deleteAuthor(id) {
-      var _this4 = this;
+      var _this5 = this;
 
       swal.fire({
         title: 'Are you sure?',
@@ -2530,10 +2541,10 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         if (result.value) {
           // Send Request To The Server
-          _this4.form["delete"]('api/author/' + id).then(function () {
+          _this5.form["delete"]('api/author/' + id).then(function () {
             swal.fire('Deleted!', 'Record has been deleted.', 'success');
 
-            _this4.loadAuthors();
+            _this5.loadAuthors();
           })["catch"](function () {
             swal.fire('Failed!', 'Error while deleting the author information', 'warning');
           });
@@ -2541,7 +2552,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     pictureAction: function pictureAction(e) {
-      var _this5 = this;
+      var _this6 = this;
 
       var file = e.target.files[0];
       var reader = new FileReader();
@@ -2549,7 +2560,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (file['type'] === 'image/jpeg' || file['type'] === 'image/png') {
         reader.onloadend = function (file) {
-          _this5.form.photo = reader.result;
+          _this6.form.photo = reader.result;
         };
 
         reader.readAsDataURL(file);
@@ -2557,9 +2568,20 @@ __webpack_require__.r(__webpack_exports__);
         swal.fire('Failed!', 'Should be image file (.png /.jpg)', 'error');
         $('#photo').val('');
       }
-    }
+    },
+    searchit: _.debounce(function () {
+      Fire.$emit('searching');
+    }, 1000)
   },
   created: function created() {
+    var _this7 = this;
+
+    Fire.$on('searching', function () {
+      var query = _this7.search;
+      axios.get('api/findAuthor?q=' + query).then(function (data) {
+        _this7.authors = data.data;
+      })["catch"](function () {});
+    });
     this.loadAuthors();
   }
 });
@@ -58166,12 +58188,53 @@ var render = function() {
               )
             ]),
             _vm._v(" "),
-            _vm._m(1)
+            _c("div", { staticClass: "float-right" }, [
+              _c("div", { staticClass: "input-group input-group-sm" }, [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.search,
+                      expression: "search"
+                    }
+                  ],
+                  staticClass: "form-control float-right",
+                  attrs: {
+                    type: "text",
+                    name: "search",
+                    placeholder: "Search"
+                  },
+                  domProps: { value: _vm.search },
+                  on: {
+                    keyup: _vm.searchit,
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.search = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "input-group-append" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-default",
+                      attrs: { type: "submit" },
+                      on: { click: _vm.searchit }
+                    },
+                    [_c("i", { staticClass: "fas fa-search" })]
+                  )
+                ])
+              ])
+            ])
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body table-responsive p-0" }, [
             _c("table", { staticClass: "table table-hover text-nowrap" }, [
-              _vm._m(2),
+              _vm._m(1),
               _vm._v(" "),
               _c(
                 "tbody",
@@ -58230,9 +58293,33 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
-          _c("div", {
-            staticClass: "card-footer d-flex justify-content-center"
-          })
+          _c(
+            "div",
+            { staticClass: "card-footer d-flex justify-content-center" },
+            [
+              _c(
+                "pagination",
+                {
+                  attrs: { data: _vm.authors },
+                  on: { "pagination-change-page": _vm.getResults }
+                },
+                [
+                  _c(
+                    "span",
+                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                    [_vm._v("< Previous")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                    [_vm._v("Next >")]
+                  )
+                ]
+              )
+            ],
+            1
+          )
         ])
       ])
     ]),
@@ -58269,13 +58356,14 @@ var render = function() {
                 ]
               ),
               _vm._v(" "),
-              _vm._m(3)
+              _vm._m(2)
             ]),
             _vm._v(" "),
             _c(
               "form",
               {
                 staticClass: "form-horizontal",
+                attrs: { novalidate: "" },
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
@@ -58500,7 +58588,7 @@ var render = function() {
                                 )
                               },
                               attrs: {
-                                type: "updated_password",
+                                type: "password",
                                 name: "updated_password",
                                 placeholder: "(Leave Empty If Not Changing)"
                               },
@@ -58563,27 +58651,6 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-sm-6" }, [
       _c("h1", [_vm._v("Authors")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "float-right" }, [
-      _c("div", { staticClass: "input-group input-group-sm" }, [
-        _c("input", {
-          staticClass: "form-control float-right",
-          attrs: { type: "text", name: "search", placeholder: "Search" }
-        }),
-        _vm._v(" "),
-        _c("div", { staticClass: "input-group-append" }, [
-          _c(
-            "button",
-            { staticClass: "btn btn-default", attrs: { type: "submit" } },
-            [_c("i", { staticClass: "fas fa-search" })]
-          )
-        ])
-      ])
     ])
   },
   function() {
