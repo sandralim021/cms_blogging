@@ -2735,7 +2735,13 @@ __webpack_require__.r(__webpack_exports__);
       }
     }
   },
-  created: function created() {///
+  created: function created() {
+    var _this3 = this;
+
+    axios.get('api/profile').then(function (_ref) {
+      var data = _ref.data;
+      return _this3.form.fill(data);
+    });
   }
 });
 

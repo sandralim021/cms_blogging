@@ -24,6 +24,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         'topic' => 'API\TopicController',
         'article' => 'API\ArticleController'
     ]);
+    Route::get('profile', 'API\AdminController@profile');
 });
 
 //Search
