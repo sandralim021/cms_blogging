@@ -46,6 +46,16 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+        'master' => [
+            'driver' => 'session',
+            'provider' => 'masters',
+            'hash' => false,
+        ],
+        'master-api' => [
+            'driver' => 'passport',
+            'provider' => 'masters',
+            'hash' => false,
+        ]
     ],
 
     /*
@@ -69,6 +79,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+        'masters' => [
+            'driver' => 'eloquent',
+            'model' => App\Master::class,
         ],
 
         // 'users' => [
@@ -95,6 +109,12 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'masters' => [
+            'provider' => 'masters',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
