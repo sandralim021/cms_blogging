@@ -95,7 +95,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('logout') }}"
+            <a class="nav-link" href="{{ route('user.logout') }}"
                 onclick="event.preventDefault();
                               document.getElementById('logout-form').submit();">
                 <i class="nav-icon fa fa-power-off"></i>
@@ -105,7 +105,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 
             </a>
 
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>
           </li>

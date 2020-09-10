@@ -9,7 +9,7 @@ use Auth;
 class MasterLoginController extends Controller
 {
     public function __construct(){
-        $this->middleware('guest:master');
+        $this->middleware('guest:master')->except('logout');
     }
     public function showLoginForm(){
         return view('auth.master_login');
@@ -27,5 +27,9 @@ class MasterLoginController extends Controller
         }
         //If unsuccessful, then redirect back to login function with form data
         return redirect()->back()->withInput($request->only('email','remember'));
+    }
+    public function logout(){
+        Auth::guard('master')->logout();
+        return redirect(route('master.login'));
     }
 }
