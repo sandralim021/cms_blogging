@@ -75,6 +75,7 @@ class AuthorController extends Controller
         $this->validate($request,[
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email,'.$id,
+            'password' => 'min:6'
         ]);
         $current_photo = $request->current_photo;
         if($request->photo != $current_photo){
@@ -92,7 +93,7 @@ class AuthorController extends Controller
             }
             
         }
-        if($request->updated_password != ""){
+        if(!empty($request->updated_password)){
             return User::where('id', $id)->update(['password' => Hash::make($request['password'])]);
         }
         return User::where('id', $id)->update([

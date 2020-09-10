@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         'article' => 'API\ArticleController'
     ]);
     Route::get('profile', 'API\AdminController@profile');
+    Route::put('profile', 'API\AdminController@updateProfile');
 });
 
 //Search

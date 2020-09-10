@@ -2690,7 +2690,8 @@ __webpack_require__.r(__webpack_exports__);
         name: '',
         email: '',
         password: '',
-        photo: ''
+        photo: '',
+        current_photo: ''
       })
     };
   },
@@ -2706,6 +2707,11 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.$Progress.start();
+      var photo = $('#photo').val();
+
+      if (photo == "") {
+        this.form.photo = this.form.current_photo;
+      }
 
       if (this.form.password == "") {
         this.form.password = undefined;
@@ -2724,14 +2730,15 @@ __webpack_require__.r(__webpack_exports__);
       var reader = new FileReader();
       console.log(file);
 
-      if (file['size'] < 2111775) {
+      if (file['type'] === 'image/jpeg' || file['type'] === 'image/png') {
         reader.onloadend = function (file) {
           _this2.form.photo = reader.result;
         };
 
         reader.readAsDataURL(file);
       } else {
-        swal.fire('Failed!', 'File size should be less than 2MB', 'error');
+        swal.fire('Failed!', 'Should be image file (.png / .jpg)', 'error');
+        $('#photo').val('');
       }
     }
   },
@@ -2740,7 +2747,12 @@ __webpack_require__.r(__webpack_exports__);
 
     axios.get('api/profile').then(function (_ref) {
       var data = _ref.data;
-      return _this3.form.fill(data);
+      _this3.form.id = data.id;
+      _this3.form.name = data.name;
+      _this3.form.photo = data.photo;
+      _this3.form.current_photo = data.photo;
+      _this3.form.email = data.email;
+      _this3.form.password = data.password;
     });
   }
 });

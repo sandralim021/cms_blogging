@@ -92,7 +92,8 @@
                     name: '',
                     email: '',
                     password: '',
-                    photo: ''
+                    photo: '',
+                    current_photo: ''
                 })
             }
         },
@@ -109,7 +110,11 @@
 
             updateInfo(){
                 this.$Progress.start();
-                if(this.form.password==""){
+                var photo = $('#photo').val();
+                if(photo == ""){
+                    this.form.photo = this.form.current_photo;
+                }
+                 if(this.form.password==""){
                     this.form.password = undefined;
                 }
                 this.form.put('api/profile/')
@@ -125,7 +130,7 @@
                 let file = e.target.files[0];
                 var reader = new FileReader();
                 console.log(file);
-                if(file['size'] < 2111775){
+                if(file['type'] === 'image/jpeg' || file['type'] === 'image/png'){
                     reader.onloadend = (file) => {
                         this.form.photo = reader.result;
                     }
@@ -133,16 +138,24 @@
                 }else{
                     swal.fire(
                         'Failed!',
-                        'File size should be less than 2MB',
+                        'Should be image file (.png / .jpg)',
                         'error'
                     )
+                    $('#photo').val('');
                 }
             }
         },
 
         created() {
             axios.get('api/profile')
-            .then(({ data }) => (this.form.fill(data)));
+            .then(({ data }) => {
+                this.form.id = data.id;
+                this.form.name = data.name;
+                this.form.photo = data.photo;
+                this.form.current_photo = data.photo;
+                this.form.email = data.email;
+                this.form.password = data.password;
+            });
         }
     }
 </script>
