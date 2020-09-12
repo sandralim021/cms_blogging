@@ -9,6 +9,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <!-- CSRF Token -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>AdminLTE 3 | Starter</title>
 
@@ -95,7 +97,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('user.logout') }}"
+            <a class="nav-link" href="{{ route('master.logout') }}"
                 onclick="event.preventDefault();
                               document.getElementById('logout-form').submit();">
                 <i class="nav-icon fa fa-power-off"></i>
@@ -105,7 +107,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 
             </a>
 
-            <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: none;">
+            <form id="logout-form" action="{{ route('master.logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>
           </li>

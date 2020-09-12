@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::group(['middleware' => 'auth:api'], function() {
+Route::group(['middleware' => ['auth.master','auth:api']], function() {
     Route::apiResources([
         'author' => 'API\AuthorController',
         'topic' => 'API\TopicController',
@@ -26,10 +26,10 @@ Route::group(['middleware' => 'auth:api'], function() {
     ]);
     Route::get('profile', 'API\AdminController@profile');
     Route::put('profile', 'API\AdminController@updateProfile');
+    Route::get('findTopic', 'API\TopicController@search');
 });
 
 //Search
-Route::get('findTopic', 'API\TopicController@search');
 Route::get('findArticle', 'API\ArticleController@search');
 Route::get('findAuthor', 'API\AuthorController@search');
 //Article
