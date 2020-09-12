@@ -94,7 +94,7 @@ class AuthorController extends Controller
             
         }
         if(!empty($request->updated_password)){
-            return Master::where('id', $id)->update(['password' => Hash::make($request['password'])]);
+            return Master::where('id', $id)->update(['password' => Hash::make($request['updated_password'])]);
         }
         return Master::where('id', $id)->update([
             'name' => $request['name'],
