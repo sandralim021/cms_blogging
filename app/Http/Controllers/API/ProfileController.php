@@ -36,7 +36,7 @@ class ProfileController extends Controller
             }
         }
         if(!empty($request->password)){
-            return Master::where('id', $id)->update(['password' => Hash::make($request['password'])]);
+            return Master::where('id', $id)->update(['password' => \Hash::make($request['password'])]);
         }
         return Master::where('id', $id)->update([
             'name' => $request['name'],

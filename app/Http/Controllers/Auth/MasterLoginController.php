@@ -23,7 +23,7 @@ class MasterLoginController extends Controller
             'password' => 'required|min:6'
         ]);
         //Attempt to log the user in
-        if(Auth::guard('master')->attempt(['email' => $request->email,'password' => $request->password], $request->remember)){
+        if(Auth::guard('master')->attempt(['email' => $request->email,'password' => $request->password])){
             return redirect()->intended(route('master.dashboard'));
         }
         //If unsuccessful, then redirect back to login function with form data
