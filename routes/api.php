@@ -18,19 +18,20 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::group(['middleware' => ['auth.master','auth:api']], function() {
+Route::group(['middleware' => ['auth.master','auth:master-api']], function() {
     Route::apiResources([
         'author' => 'API\AuthorController',
         'topic' => 'API\TopicController',
         'article' => 'API\ArticleController'
     ]);
-    Route::get('profile', 'API\AdminController@profile');
-    Route::put('profile', 'API\AdminController@updateProfile');
+    Route::get('profile', 'API\ProfileController@profile');
+    Route::put('profile', 'API\ProfileController@updateProfile');
+
+    //Search
+    Route::get('findArticle', 'API\ArticleController@search');
+    Route::get('findAuthor', 'API\AuthorController@search');
     Route::get('findTopic', 'API\TopicController@search');
+    //Article
+    Route::get('get_topics', 'API\ArticleController@get_topics');
 });
 
-//Search
-Route::get('findArticle', 'API\ArticleController@search');
-Route::get('findAuthor', 'API\AuthorController@search');
-//Article
-Route::get('get_topics', 'API\ArticleController@get_topics');

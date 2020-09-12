@@ -128,7 +128,7 @@
             },
             createTopic(){
                 this.$Progress.start();
-                this.form.post('auth.master/topic')
+                this.form.post('api/topic')
                 .then(()=>{
                     $('#topic_modal').modal('hide');
                     toast.fire({
@@ -151,7 +151,7 @@
             },
             updateTopic(){
                 this.$Progress.start();
-                this.form.put('auth.master/topic/'+this.form.topic_id)
+                this.form.put('api/topic/'+this.form.topic_id)
                 .then(()=>{
                     $('#topic_modal').modal('hide');
                     toast.fire({
@@ -178,7 +178,7 @@
                 }).then((result) => {
                     if (result.value) {
                         // Send Request To The Server
-                        this.form.delete('auth.master/topic/'+id).then(() =>{
+                        this.form.delete('api/topic/'+id).then(() =>{
                             swal.fire(
                                 'Deleted!',
                                 'Record has been deleted.',
@@ -197,10 +197,10 @@
                 })
             },
             loadTopics(){
-                axios.get('auth.master/topic').then(({ data }) => (this.topics = data));
+                axios.get('api/topic').then(({ data }) => (this.topics = data));
             },
             getResults(page = 1){
-                axios.get('auth.master/topic?page=' + page)
+                axios.get('api/topic?page=' + page)
 				.then(response => {
 					this.topics = response.data;
 				});
@@ -212,7 +212,7 @@
         created() {
             Fire.$on('searching',() => {
                 let query = this.search;
-                axios.get('auth.master/findTopic?q=' + query)
+                axios.get('api/findTopic?q=' + query)
                 .then((data) => {
                     this.topics = data.data
                 })

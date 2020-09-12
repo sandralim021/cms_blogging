@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
+use Response;
 use App\Master;
 
 class MasterLoginController extends Controller
@@ -23,13 +24,7 @@ class MasterLoginController extends Controller
         ]);
         //Attempt to log the user in
         if(Auth::guard('master')->attempt(['email' => $request->email,'password' => $request->password], $request->remember)){
-            //If successful, then redirect to their intended location
-            $user = Auth::guard('master')->user();
-            $tokenResult =  $user->createToken('Laravel Grant Access Token');
-            // return token in json response
-            return response()->json(['success' => ['token' => $tokenResult->accessToken]], 200);
-            
-            
+            return redirect()->intended(route('master.dashboard'));
         }
         //If unsuccessful, then redirect back to login function with form data
         return redirect()->back()->withInput($request->only('email','remember'));

@@ -4,11 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\User;
-class AdminController extends Controller
+use App\Master;
+class ProfileController extends Controller
 {
     public function profile(){
-        return auth('api')->user();
+      return \Auth::guard('master-api')->user();
     }
     public function updateProfile(Request $request){
 
@@ -36,9 +36,9 @@ class AdminController extends Controller
             }
         }
         if(!empty($request->password)){
-            return User::where('id', $id)->update(['password' => Hash::make($request['password'])]);
+            return Master::where('id', $id)->update(['password' => Hash::make($request['password'])]);
         }
-        return User::where('id', $id)->update([
+        return Master::where('id', $id)->update([
             'name' => $request['name'],
             'email' => $request['email'],
             'photo' => $request['photo']

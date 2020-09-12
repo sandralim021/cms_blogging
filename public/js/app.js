@@ -2899,7 +2899,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.$Progress.start();
-      this.form.post('auth.master/topic').then(function () {
+      this.form.post('api/topic').then(function () {
         $('#topic_modal').modal('hide');
         toast.fire({
           icon: 'success',
@@ -2924,7 +2924,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.$Progress.start();
-      this.form.put('auth.master/topic/' + this.form.topic_id).then(function () {
+      this.form.put('api/topic/' + this.form.topic_id).then(function () {
         $('#topic_modal').modal('hide');
         toast.fire({
           icon: 'success',
@@ -2953,7 +2953,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         if (result.value) {
           // Send Request To The Server
-          _this3.form["delete"]('auth.master/topic/' + id).then(function () {
+          _this3.form["delete"]('api/topic/' + id).then(function () {
             swal.fire('Deleted!', 'Record has been deleted.', 'success');
 
             _this3.loadTopics();
@@ -2966,7 +2966,7 @@ __webpack_require__.r(__webpack_exports__);
     loadTopics: function loadTopics() {
       var _this4 = this;
 
-      axios.get('auth.master/topic').then(function (_ref) {
+      axios.get('api/topic').then(function (_ref) {
         var data = _ref.data;
         return _this4.topics = data;
       });
@@ -2975,7 +2975,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this5 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('auth.master/topic?page=' + page).then(function (response) {
+      axios.get('api/topic?page=' + page).then(function (response) {
         _this5.topics = response.data;
       });
     },
@@ -2988,7 +2988,7 @@ __webpack_require__.r(__webpack_exports__);
 
     Fire.$on('searching', function () {
       var query = _this6.search;
-      axios.get('auth.master/findTopic?q=' + query).then(function (data) {
+      axios.get('api/findTopic?q=' + query).then(function (data) {
         _this6.topics = data.data;
       })["catch"](function () {});
     });

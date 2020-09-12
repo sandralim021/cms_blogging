@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\User;
+use App\Master;
 
 class AuthorController extends Controller
 {
@@ -16,7 +16,7 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        return User::where('role','author')
+        return Master::where('role','author')
                     ->latest()
                     ->paginate(10);
     }
@@ -43,7 +43,7 @@ class AuthorController extends Controller
         }else{
             $request->merge(['photo' => 'user_default.png']);
         }
-        return User::create([
+        return Master::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'role' => 'author',
@@ -94,9 +94,9 @@ class AuthorController extends Controller
             
         }
         if(!empty($request->updated_password)){
-            return User::where('id', $id)->update(['password' => Hash::make($request['password'])]);
+            return Master::where('id', $id)->update(['password' => Hash::make($request['password'])]);
         }
-        return User::where('id', $id)->update([
+        return Master::where('id', $id)->update([
             'name' => $request['name'],
             'email' => $request['email'],
             'photo' => $request['photo']
@@ -111,7 +111,7 @@ class AuthorController extends Controller
      */
     public function destroy($id)
     {
-        $author = User::findOrFail($id);
+        $author = Master::findOrFail($id);
         $authorPhoto = public_path('img/user_photos/').$author->photo;
         if(!($author->photo == 'user_default.png')){
             if(file_exists($authorPhoto)){
@@ -123,12 +123,12 @@ class AuthorController extends Controller
 
     public function search(){
         if ($search = \Request::get('q')) {
-            $authors = User::where(function($query) use ($search){
+            $authors = Master::where(function($query) use ($search){
                 $query->where([['name','LIKE',"%$search%"],['role','author']])
                         ->orWhere([['email','LIKE',"%$search%"],['role','author']]);
             })->paginate(10);
         }else{
-            $authors = User::where('role','author')
+            $authors = Master::where('role','author')
                             ->latest()
                             ->paginate(10);
         }
