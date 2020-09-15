@@ -18,6 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/blog-styles.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -76,5 +77,10 @@
             @yield('content')
         </main>
     </div>
+    <footer class="page-footer font-small stylish-color-light bt-4 mt-4">
+        <div class="footer-copyright py-3 text-center">
+            Copyright 2020: CMS Blogging
+        </div>
+    </footer>
 </body>
 </html>
