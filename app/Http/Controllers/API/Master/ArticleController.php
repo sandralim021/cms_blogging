@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Master;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 use App\Article;
 use App\Topic;
 use App\Master;
-
-
 
 class ArticleController extends Controller
 {

@@ -12,11 +12,11 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 let routes = [
-    { path: '/users', component: require('./components/admin/Users.vue').default},
-    { path: '/authors', component: require('./components/admin/Authors.vue').default},
-    { path: '/topics', component: require('./components/admin/Topics.vue').default},
-    { path: '/articles', component: require('./components/admin/Articles.vue').default},
-    { path: '/profile', component: require('./components/admin/Profile.vue').default}
+    { path: '/users', component: require('./components/master/Users.vue').default},
+    { path: '/authors', component: require('./components/master/Authors.vue').default},
+    { path: '/topics', component: require('./components/master/Topics.vue').default},
+    { path: '/articles', component: require('./components/master/Articles.vue').default},
+    { path: '/profile', component: require('./components/master/Profile.vue').default}
 ]
 
 const router = new VueRouter({

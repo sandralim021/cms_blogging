@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Master;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Master;
 use App\User;
-class ProfileController extends Controller
+class UserController extends Controller
 {
     public function profile(){
       return \Auth::guard('master-api')->user();

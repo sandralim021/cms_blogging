@@ -20,20 +20,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth.master','auth:master-api']], function() {
     Route::apiResources([
-        'author' => 'API\AuthorController',
-        'topic' => 'API\TopicController',
-        'article' => 'API\ArticleController'
+        'author' => 'API\Master\AuthorController',
+        'topic' => 'API\Master\TopicController',
+        'article' => 'API\Master\ArticleController'
     ]);
-    Route::get('profile', 'API\ProfileController@profile');
-    Route::put('profile', 'API\ProfileController@updateProfile');
-    Route::get('display_users', 'API\ProfileController@displayUsers');
+    Route::get('profile', 'API\Master\UserController@profile');
+    Route::put('profile', 'API\Master\UserController@updateProfile');
+    Route::get('display_users', 'API\Master\UserController@displayUsers');
 
     //Search
-    Route::get('findArticle', 'API\ArticleController@search');
-    Route::get('findAuthor', 'API\AuthorController@search');
-    Route::get('findTopic', 'API\TopicController@search');
-    Route::get('findUser', 'API\ProfileController@search');
+    Route::get('findArticle', 'API\Master\ArticleController@search');
+    Route::get('findAuthor', 'API\Master\AuthorController@search');
+    Route::get('findTopic', 'API\Master\TopicController@search');
+    Route::get('findUser', 'API\Master\UserController@search');
     //Article
-    Route::get('get_topics', 'API\ArticleController@get_topics');
+    Route::get('get_topics', 'API\Master\ArticleController@get_topics');
 });
 
