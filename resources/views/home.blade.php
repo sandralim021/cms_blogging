@@ -27,7 +27,7 @@
                     <br>
                     <span class="sub-article-date">April 21, 2020</span>
                     <br>
-                    <span class="sub-article-title">Title of the first sub article</span>
+                    <a href="#" class="sub-article-title">Title of the first sub article</a>
                     <br>
                     <span class="sub-article-author">By <span class="author-name">Kassandra Lim</span></span>
                     <span class="sub-article-category">Article Category</span>
@@ -42,7 +42,7 @@
                     <br>
                     <span class="sub-article-date">April 21, 2020</span>
                     <br>
-                    <span class="sub-article-title">Title of the first sub article</span>
+                    <a href="#" class="sub-article-title">Title of the first sub article</a>
                     <br>
                     <span class="sub-article-author">By <span class="author-name">Kassandra Lim</span></span>
                     <span class="sub-article-category">Article Category</span>
@@ -57,7 +57,7 @@
                     <br>
                     <span class="sub-article-date">April 21, 2020</span>
                     <br>
-                    <span class="sub-article-title">Title of the first sub article</span>
+                    <a href="#" class="sub-article-title">Title of the first sub article</a>
                     <br>
                     <span class="sub-article-author">By <span class="author-name">Kassandra Lim</span></span>
                     <span class="sub-article-category">Article Category</span>
