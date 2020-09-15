@@ -9,9 +9,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -21,7 +18,7 @@
     <link href="{{ asset('css/blog-styles.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
+    <div id="user">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -39,6 +36,11 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <router-link to="/main" class="nav-link" active-class="active" exact>
+                                Articles
+                            </router-link>
+                        </li>
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
@@ -75,6 +77,7 @@
 
         <main class="py-4">
             @yield('content')
+            <router-view></router-view>
         </main>
     </div>
     <footer class="page-footer font-small stylish-color-light bt-4 mt-4">
@@ -82,5 +85,7 @@
             Copyright 2020: CMS Blogging
         </div>
     </footer>
+    <!-- Scripts -->
+    <script src="/js/user.js"></script>
 </body>
 </html>

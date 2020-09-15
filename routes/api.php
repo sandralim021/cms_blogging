@@ -36,4 +36,8 @@ Route::group(['middleware' => ['auth.master','auth:master-api']], function() {
     //Article
     Route::get('get_topics', 'API\Master\ArticleController@get_topics');
 });
+//User
+Route::group(['middleware' => 'auth:api'], function() {
+    Route::get('loadArticles', 'API\User\MainController@loadArticles');
+});
 
