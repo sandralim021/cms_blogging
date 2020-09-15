@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Master;
+use App\User;
 class ProfileController extends Controller
 {
     public function profile(){
@@ -43,5 +44,22 @@ class ProfileController extends Controller
             'email' => $request['email'],
             'photo' => $request['photo']
         ]);
+    }
+    public function displayUsers(){
+        return User::latest()
+                    ->paginate(10);
+    }
+    public function search(){
+        if ($search = \Request::get('q')) {
+            $users = User::where(function($query) use ($search){
+                $query->where('name','LIKE',"%$search%")
+                    ->orWhere('email','LIKE',"%$search%");
+            })->latest()->paginate(10);
+        }else{
+            $users = User::latest()
+                            ->paginate(10);
+        }
+
+        return $users;
     }
 }

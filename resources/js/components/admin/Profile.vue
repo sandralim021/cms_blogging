@@ -147,6 +147,7 @@
         },
 
         created() {
+            this.$Progress.start();
             axios.get('api/profile')
             .then(({ data }) => {
                 this.form.id = data.id;
@@ -155,7 +156,18 @@
                 this.form.current_photo = data.photo;
                 this.form.email = data.email;
                 this.form.password = data.password;
-            });
+                toast.fire({
+                    icon: 'success',
+                    title: 'Data Loaded Successfully'
+                });
+                this.$Progress.finish();
+            })
+            .catch(()=>{
+                //Failed
+                this.$Progress.fail();
+            })
+            
+            
         }
     }
 </script>

@@ -26,11 +26,13 @@ Route::group(['middleware' => ['auth.master','auth:master-api']], function() {
     ]);
     Route::get('profile', 'API\ProfileController@profile');
     Route::put('profile', 'API\ProfileController@updateProfile');
+    Route::get('display_users', 'API\ProfileController@displayUsers');
 
     //Search
     Route::get('findArticle', 'API\ArticleController@search');
     Route::get('findAuthor', 'API\AuthorController@search');
     Route::get('findTopic', 'API\TopicController@search');
+    Route::get('findUser', 'API\ProfileController@search');
     //Article
     Route::get('get_topics', 'API\ArticleController@get_topics');
 });

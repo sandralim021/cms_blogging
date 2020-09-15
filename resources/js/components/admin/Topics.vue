@@ -197,7 +197,19 @@
                 })
             },
             loadTopics(){
-                axios.get('api/topic').then(({ data }) => (this.topics = data));
+                this.$Progress.start();
+                axios.get('api/topic').then(({ data }) => (this.topics = data))
+                .then(()=>{
+                    toast.fire({
+                        icon: 'success',
+                        title: 'Data Loaded Successfully'
+                    });
+                    this.$Progress.finish();
+                })
+                .catch(()=>{
+                    //Failed
+                    this.$Progress.fail();
+                })
             },
             getResults(page = 1){
                 axios.get('api/topic?page=' + page)

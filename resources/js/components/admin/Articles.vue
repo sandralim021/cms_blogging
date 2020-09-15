@@ -196,7 +196,19 @@
                     })
             },
             loadArticles(){
-                axios.get('api/article').then(({ data }) => (this.articles = data));
+                this.$Progress.start();
+                axios.get('api/article').then(({ data }) => (this.articles = data))
+                .then(()=>{
+                    toast.fire({
+                        icon: 'success',
+                        title: 'Data Loaded Successfully'
+                    });
+                    this.$Progress.finish();
+                })
+                .catch(()=>{
+                    //Failed
+                    this.$Progress.fail();
+                })
             },
             getResults(page = 1){
                 axios.get('api/article?page=' + page)

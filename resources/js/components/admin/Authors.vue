@@ -165,7 +165,19 @@
                 })
             },
             loadAuthors(){
-                axios.get('api/author').then(({ data }) => (this.authors = data));
+                this.$Progress.start();
+                axios.get('api/author').then(({ data }) => (this.authors = data))
+                .then(()=>{
+                    toast.fire({
+                        icon: 'success',
+                        title: 'Data Loaded Successfully'
+                    });
+                    this.$Progress.finish();
+                })
+                .catch(()=>{
+                    //Failed
+                    this.$Progress.fail();
+                })
             },
             getResults(page = 1){
                 axios.get('api/author?page=' + page)
