@@ -1940,11 +1940,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editmode: false,
       articles: {},
+      topics: '',
       search: ''
     };
   },
@@ -1953,7 +1968,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.$Progress.start();
-      axios.get('api/loadArticles').then(function (_ref) {
+      axios.get('api/user/articles').then(function (_ref) {
         var data = _ref.data;
         return _this.articles = data;
       }).then(function () {
@@ -1968,12 +1983,25 @@ __webpack_require__.r(__webpack_exports__);
         _this.$Progress.fail();
       });
     },
-    getResults: function getResults() {
+    loadTopics: function loadTopics() {
       var _this2 = this;
 
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('user/api/articles?page=' + page).then(function (response) {
+      axios.get('api/user/topics').then(function (response) {
         _this2.topics = response.data;
+      });
+    },
+    getResults: function getResults() {
+      var _this3 = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      this.$Progress.start();
+      axios.get('api/user/articles?page=' + page).then(function (response) {
+        _this3.articles = response.data;
+
+        _this3.$Progress.finish();
+      })["catch"](function () {
+        //Failed
+        _this3.$Progress.fail();
       });
     },
     searchit: _.debounce(function () {
@@ -1981,6 +2009,15 @@ __webpack_require__.r(__webpack_exports__);
     }, 1000)
   },
   created: function created() {
+    var _this4 = this;
+
+    Fire.$on('searching', function () {
+      var query = _this4.search;
+      axios.get('api/user/findArticle?q=' + query).then(function (data) {
+        _this4.articles = data.data;
+      })["catch"](function () {});
+    });
+    this.loadTopics();
     this.loadArticles();
   }
 });
@@ -41411,41 +41448,102 @@ var render = function() {
             )
           }),
           _vm._v(" "),
-          _vm._m(0)
+          _c(
+            "div",
+            { staticClass: "d-flex justify-content-center" },
+            [
+              _c(
+                "pagination",
+                {
+                  attrs: { data: _vm.articles },
+                  on: { "pagination-change-page": _vm.getResults }
+                },
+                [
+                  _c(
+                    "span",
+                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                    [_vm._v("< Previous")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                    [_vm._v("Next >")]
+                  )
+                ]
+              )
+            ],
+            1
+          )
         ],
         2
       ),
       _vm._v(" "),
-      _vm._m(1)
+      _c("div", { staticClass: "col-md-4" }, [
+        _c("span", { staticClass: "sponsors" }, [_vm._v("Search Article")]),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c("form", { staticClass: "form-inline my-2 my-lg-0" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.search,
+                expression: "search"
+              }
+            ],
+            staticClass: "form-control mr-sm-2",
+            attrs: {
+              type: "search",
+              placeholder: "Search",
+              "aria-label": "Search"
+            },
+            domProps: { value: _vm.search },
+            on: {
+              keyup: _vm.searchit,
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.search = $event.target.value
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c("span", { staticClass: "sponsors" }, [_vm._v("Topics")]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "list-group" },
+          _vm._l(_vm.topics, function(topic) {
+            return _c(
+              "a",
+              {
+                key: topic.topic_id,
+                staticClass: "list-group-item list-group-item-action",
+                attrs: { value: topic.topic_id, href: "#" }
+              },
+              [
+                _vm._v(
+                  "\n                    " +
+                    _vm._s(topic.topic_name) +
+                    "\n                "
+                )
+              ]
+            )
+          }),
+          0
+        )
+      ])
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "text-right" }, [
-      _c("span", { staticClass: "demo-link" }, [_vm._v("More...")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-4" }, [
-      _c("span", { staticClass: "sponsors" }, [_vm._v("SPONSORS")]),
-      _vm._v(" "),
-      _c("br"),
-      _c("br"),
-      _vm._v(" "),
-      _c("img", {
-        staticClass: "img-responsive",
-        attrs: { width: "100%", src: "http://via.placeholder.com/600x800" }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

@@ -78,6 +78,8 @@
         <main class="py-4">
             @yield('content')
             <router-view></router-view>
+            <!-- set progressbar -->
+            <vue-progress-bar></vue-progress-bar>
         </main>
     </div>
     <footer class="page-footer font-small stylish-color-light bt-4 mt-4">

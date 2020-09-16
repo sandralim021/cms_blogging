@@ -19,12 +19,26 @@
                     </div>
                     <hr>
                 </div>
-                <div class="text-right"><span class="demo-link">More...</span></div>
+                <div class="d-flex justify-content-center">
+                    <pagination :data="articles" @pagination-change-page="getResults">
+                        <span slot="prev-nav">&lt; Previous</span>
+                        <span slot="next-nav">Next &gt;</span>
+                    </pagination>
+                </div>
             </div>
             <div class="col-md-4">
-                <span class="sponsors">SPONSORS</span>
-                <br><br>
-                <img class="img-responsive" width="100%" src="http://via.placeholder.com/600x800">
+                <span class="sponsors">Search Article</span>
+                <br>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" v-model="search" @keyup="searchit" type="search" placeholder="Search" aria-label="Search">
+                </form>
+                <br>
+                <span class="sponsors">Topics</span>
+                <div class="list-group">
+                    <a v-for="topic in topics" :key="topic.topic_id" :value="topic.topic_id" href="#" class="list-group-item list-group-item-action">
+                        {{ topic.topic_name }}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -36,13 +50,14 @@
             return{
                 editmode: false,
                 articles: {},
+                topics: '',
                 search: ''
             }
         },
         methods: {
             loadArticles(){
                 this.$Progress.start();
-                axios.get('api/loadArticles').then(({ data }) => (this.articles = data))
+                axios.get('api/user/articles').then(({ data }) => (this.articles = data))
                 .then(()=>{
                     toast.fire({
                         icon: 'success',
@@ -55,17 +70,40 @@
                     this.$Progress.fail();
                 })
             },
+            loadTopics(){
+                axios.get('api/user/topics')
+                    .then((response) => {
+                       this.topics = response.data;
+                    })
+            },
             getResults(page = 1){
-                axios.get('user/api/articles?page=' + page)
+                this.$Progress.start();
+                axios.get('api/user/articles?page=' + page)
 				.then(response => {
-					this.topics = response.data;
-				});
+                    this.articles = response.data;
+                    this.$Progress.finish();
+                })
+                .catch(()=>{
+                    //Failed
+                    this.$Progress.fail();
+                })
             },
             searchit:_.debounce(() => {
                 Fire.$emit('searching');
             },1000)
         },
-        created() {
+        created(){
+            Fire.$on('searching',() => {
+                let query = this.search;
+                axios.get('api/user/findArticle?q=' + query)
+                .then((data) => {
+                    this.articles = data.data
+                })
+                .catch(() => {
+
+                })
+            })
+            this.loadTopics();
             this.loadArticles();
         }
     }
