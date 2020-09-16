@@ -16,7 +16,7 @@ class MainController extends Controller
                     ->select('articles.*','topics.topic_name','masters.name')
                     ->where('articles.article_status','=','1')
                     ->latest()
-                    ->paginate(3);
+                    ->paginate(10);
     }
     
     public function loadTopics(){
@@ -35,7 +35,7 @@ class MainController extends Controller
                                     ->orWhere([['topics.topic_name','LIKE',"%$search%"],['articles.article_status','=','1']])
                                     ->orWhere([['articles.content','LIKE',"%$search%"],['articles.article_status','=','1']])
                                     ->orWhere([['masters.name','LIKE',"%$search%"],['articles.article_status','=','1']]);
-                            })->latest()->paginate(3);
+                            })->latest()->paginate(10);
             
         }else{
             $articles = DB::table('articles')
@@ -44,10 +44,22 @@ class MainController extends Controller
                             ->select('articles.*','topics.topic_name','masters.name')
                             ->where('articles.article_status','=','1')
                             ->latest()
-                            ->paginate(3);
+                            ->paginate(10);
             
         }
 
+        return $articles;
+    }
+    public function topicSearch(){
+        if($search = \Request::get('topic')){
+            $articles = DB::table('articles')
+                            ->join('topics','articles.topic_id', '=', 'topics.topic_id')
+                            ->join('masters','articles.user_id','=','masters.id')
+                            ->select('articles.*','topics.topic_name','masters.name')
+                            ->where(function($query) use ($search){
+                                $query->where('articles.topic_id','=',$search);
+                            })->latest()->paginate(10);
+        }
         return $articles;
     }
 }

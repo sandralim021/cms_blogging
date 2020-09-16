@@ -2004,17 +2004,24 @@ __webpack_require__.r(__webpack_exports__);
         _this3.$Progress.fail();
       });
     },
+    TopicSearch: function TopicSearch(topic) {
+      var _this4 = this;
+
+      axios.get('api/user/TopicSearch?topic=' + topic).then(function (data) {
+        _this4.articles = data.data;
+      })["catch"](function () {});
+    },
     searchit: _.debounce(function () {
       Fire.$emit('searching');
     }, 1000)
   },
   created: function created() {
-    var _this4 = this;
+    var _this5 = this;
 
     Fire.$on('searching', function () {
-      var query = _this4.search;
+      var query = _this5.search;
       axios.get('api/user/findArticle?q=' + query).then(function (data) {
-        _this4.articles = data.data;
+        _this5.articles = data.data;
       })["catch"](function () {});
     });
     this.loadTopics();
@@ -41390,7 +41397,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    _c("span", { staticClass: "recent-articles" }, [_vm._v("Recent Articles")]),
+    _c("span", { staticClass: "recent-articles" }, [_vm._v("Articles")]),
     _vm._v(" "),
     _c("hr"),
     _vm._v(" "),
@@ -41525,8 +41532,15 @@ var render = function() {
               "a",
               {
                 key: topic.topic_id,
-                staticClass: "list-group-item list-group-item-action",
-                attrs: { value: topic.topic_id, href: "#" }
+                staticClass:
+                  "list-group-item list-group-item-action select-topic",
+                attrs: { href: "#" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.TopicSearch(topic.topic_id)
+                  }
+                }
               },
               [
                 _vm._v(

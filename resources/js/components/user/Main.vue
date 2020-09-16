@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <span class="recent-articles">Recent Articles</span>
+        <span class="recent-articles">Articles</span>
         <hr>
         <div class="row mt-3">
             <div class="col-md-8">
@@ -35,7 +35,7 @@
                 <br>
                 <span class="sponsors">Topics</span>
                 <div class="list-group">
-                    <a v-for="topic in topics" :key="topic.topic_id" :value="topic.topic_id" href="#" class="list-group-item list-group-item-action">
+                    <a v-for="topic in topics" :key="topic.topic_id" @click.prevent="TopicSearch(topic.topic_id)" href="#" class="list-group-item list-group-item-action select-topic">
                         {{ topic.topic_name }}
                     </a>
                 </div>
@@ -87,6 +87,16 @@
                     //Failed
                     this.$Progress.fail();
                 })
+            },
+            TopicSearch(topic){
+                axios.get('api/user/TopicSearch?topic=' + topic)
+                .then((data) => {
+                    this.articles = data.data
+                })
+                .catch(() => {
+
+                })
+
             },
             searchit:_.debounce(() => {
                 Fire.$emit('searching');
