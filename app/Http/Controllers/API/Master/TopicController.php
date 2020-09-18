@@ -78,7 +78,8 @@ class TopicController extends Controller
     }
     public function search($search){
         $topics = Topic::where(function($query) use ($search){
-                        $query->where('topic_name','LIKE',"%$search%");
+                        $query->where('topic_name','LIKE',"%$search%")
+                            ->orWhere('topic_status','LIKE',"%$search%");
         })->latest()->paginate(10);
 
         return $topics;

@@ -2110,6 +2110,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 Vue.filter('striphtml', function (value) {
@@ -2118,10 +2120,10 @@ Vue.filter('striphtml', function (value) {
   var text = div.textContent || div.innerText || "";
   var final_value = '';
 
-  if (text.length < 25) {
+  if (text.length < 15) {
     final_value = text;
   } else {
-    final_value = text.substring(0, 25) + "...";
+    final_value = text.substring(0, 15) + "...";
   }
 
   return final_value;
@@ -2215,7 +2217,7 @@ Vue.filter('striphtml', function (value) {
           title: 'Article Created Successfully'
         });
 
-        _this4.loadArticles();
+        _this4.getResults();
 
         _this4.$Progress.finish();
       })["catch"](function () {
@@ -2253,7 +2255,7 @@ Vue.filter('striphtml', function (value) {
           title: 'Article Updated Successfully'
         });
 
-        _this5.loadArticles();
+        _this5.getResults();
 
         _this5.$Progress.finish();
       })["catch"](function () {
@@ -2487,7 +2489,7 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Author Created Successfully'
         });
 
-        _this.loadAuthors();
+        _this.getResults();
 
         _this.$Progress.finish();
       })["catch"](function () {
@@ -2562,11 +2564,10 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Author Updated Successfully'
         });
 
-        _this4.loadAuthors();
+        _this4.getResults();
 
         _this4.$Progress.finish();
       })["catch"](function () {
-        //Failed
         _this4.$Progress.fail();
       });
     },
@@ -2954,7 +2955,7 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Topic Created Successfully'
         });
 
-        _this.loadTopics();
+        _this.getResults();
 
         _this.$Progress.finish();
       })["catch"](function () {
@@ -2979,7 +2980,7 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Topic Updated Successfully'
         });
 
-        _this2.loadTopics();
+        _this2.getResults();
 
         _this2.$Progress.finish();
       })["catch"](function () {
@@ -58055,7 +58056,9 @@ var render = function() {
                       _vm._v(_vm._s(_vm._f("striphtml")(article.content)))
                     ]),
                     _vm._v(" "),
-                    article.article_status == "0"
+                    _c("td", [_vm._v(_vm._s(article.name))]),
+                    _vm._v(" "),
+                    article.article_status == "draft"
                       ? _c("td", [
                           _c("span", { staticClass: "badge bg-warning" }, [
                             _vm._v("Draft")
@@ -58497,11 +58500,11 @@ var render = function() {
                                 [_vm._v("Select Status")]
                               ),
                               _vm._v(" "),
-                              _c("option", { attrs: { value: "0" } }, [
+                              _c("option", { attrs: { value: "draft" } }, [
                                 _vm._v("Draft")
                               ]),
                               _vm._v(" "),
-                              _c("option", { attrs: { value: "1" } }, [
+                              _c("option", { attrs: { value: "published" } }, [
                                 _vm._v("Published")
                               ])
                             ]
@@ -58568,6 +58571,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Topic")]),
         _vm._v(" "),
         _c("th", [_vm._v("Content")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Created By")]),
         _vm._v(" "),
         _c("th", [_vm._v("Status")]),
         _vm._v(" "),
@@ -59573,7 +59578,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(topic.topic_name))]),
                     _vm._v(" "),
-                    topic.topic_status == "0"
+                    topic.topic_status == "not_active"
                       ? _c("td", [
                           _c("span", { staticClass: "badge bg-danger" }, [
                             _vm._v("Not Active")
@@ -59835,11 +59840,11 @@ var render = function() {
                               _vm._v("Select Status")
                             ]),
                             _vm._v(" "),
-                            _c("option", { attrs: { value: "0" } }, [
+                            _c("option", { attrs: { value: "not_active" } }, [
                               _vm._v("Not Active")
                             ]),
                             _vm._v(" "),
-                            _c("option", { attrs: { value: "1" } }, [
+                            _c("option", { attrs: { value: "active" } }, [
                               _vm._v("Active")
                             ])
                           ]

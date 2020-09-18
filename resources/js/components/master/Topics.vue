@@ -35,7 +35,7 @@
                                 <tr v-for="(topic,index) in topics.data" :key="topic.topic_id">
                                     <td>{{(index + 1) + (topics.from - 1)}}</td>
                                     <td>{{topic.topic_name}}</td>
-                                    <td v-if="topic.topic_status == '0'">
+                                    <td v-if="topic.topic_status == 'not_active'">
                                         <span class="badge bg-danger">Not Active</span>
                                     </td>
                                     <td v-else>
@@ -91,8 +91,8 @@
                                 <div class="col-sm-8">
                                     <select v-model="form.topic_status" class="form-control" name="topic_status" :class="{ 'is-invalid': form.errors.has('topic_status') }">
                                         <option value="">Select Status</option>
-                                        <option value="0">Not Active</option>
-                                        <option value="1">Active</option>
+                                        <option value="not_active">Not Active</option>
+                                        <option value="active">Active</option>
                                     </select>
                                      <has-error :form="form" field="topic_status"></has-error>
                                 </div>
@@ -141,7 +141,7 @@
                         icon: 'success',
                         title: 'Topic Created Successfully'
                     });
-                    this.loadTopics();
+                    this.getResults();
                     this.$Progress.finish();
                 })
                 .catch(()=>{
@@ -164,7 +164,7 @@
                         icon: 'success',
                         title: 'Topic Updated Successfully'
                     });
-                    this.loadTopics();
+                    this.getResults();
                     this.$Progress.finish();
                 })
                 .catch(()=>{

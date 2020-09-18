@@ -30,6 +30,7 @@
                                     <th>Photo</th>
                                     <th>Topic</th>
                                     <th>Content</th>
+                                    <th>Created By</th>
                                     <th>Status</th>
                                     <th>Modify</th>
                                 </tr>
@@ -41,7 +42,8 @@
                                     <td><img :src="'/img/article_photos/'+article.photo" width="50" height="50" class="img-fluid"></td>
                                     <td>{{article.topic_name}}</td>
                                     <td>{{article.content | striphtml}}</td>
-                                    <td v-if="article.article_status == '0'">
+                                    <td>{{article.name}}</td>
+                                    <td v-if="article.article_status == 'draft'">
                                         <span class="badge bg-warning">Draft</span>
                                     </td>
                                     <td v-else>
@@ -128,8 +130,8 @@
                                 <div class="col-sm-5">
                                      <select v-model="form.article_status" class="form-control" name="article_status" :class="{ 'is-invalid': form.errors.has('article_status') }">
                                         <option value="" selected>Select Status</option>
-                                        <option value="0">Draft</option>
-                                        <option value="1">Published</option>
+                                        <option value="draft">Draft</option>
+                                        <option value="published">Published</option>
                                     </select>
                                     <has-error :form="form" field="article_status"></has-error>
                                 </div>
@@ -154,10 +156,10 @@
         div.innerHTML = value;
         var text = div.textContent || div.innerText || "";
         var final_value = '';
-        if(text.length < 25){
+        if(text.length < 15){
             final_value = text;
         }else{
-            final_value = text.substring(0,25)+"...";
+            final_value = text.substring(0,15)+"...";
         }
         return final_value;
     });
@@ -243,7 +245,7 @@
                         icon: 'success',
                         title: 'Article Created Successfully'
                     });
-                    this.loadArticles();
+                    this.getResults();
                     this.$Progress.finish();
                 })
                 .catch(()=>{
@@ -277,7 +279,7 @@
                         icon: 'success',
                         title: 'Article Updated Successfully'
                     });
-                    this.loadArticles();
+                    this.getResults();
                     this.$Progress.finish();
                 })
                 .catch(()=>{

@@ -21,21 +21,23 @@ class ArticleController extends Controller
         if(auth()->user()->role === 'author'){
             return  DB::table('articles')
                 ->join('topics','articles.topic_id', '=', 'topics.topic_id')
-                ->select('articles.*','topics.topic_name')
+                ->join('masters','articles.user_id', '=', 'masters.id')
+                ->select('articles.*','topics.topic_name','masters.name')
                 ->where('articles.user_id','=',auth()->user()->id)
                 ->latest()
                 ->paginate(10);
         }else{
             return  DB::table('articles')
                     ->join('topics','articles.topic_id', '=', 'topics.topic_id')
-                    ->select('articles.*','topics.topic_name')
+                    ->join('masters','articles.user_id', '=', 'masters.id')
+                    ->select('articles.*','topics.topic_name','masters.name')
                     ->latest()
                     ->paginate(10);
         }
         
     }
     public function get_topics(){
-        return Topic::where('topic_status',1)
+        return Topic::where('topic_status','active')
                     ->orderBy('topic_name','ASC')
                     ->get(['topic_id','topic_name']);
     }
@@ -144,20 +146,26 @@ class ArticleController extends Controller
         if(auth()->user()->role === 'author'){
             $articles = DB::table('articles')
                             ->join('topics','articles.topic_id', '=', 'topics.topic_id')
-                            ->select('articles.*','topics.topic_name')
+                            ->join('masters','articles.user_id', '=', 'masters.id')
+                            ->select('articles.*','topics.topic_name','masters.name')
                             ->where(function($query) use ($search){
                                 $query->where([['articles.title','LIKE',"%$search%"],['articles.user_id','=',auth()->user()->id]])
                                     ->orWhere([['topics.topic_name','LIKE',"%$search%"],['articles.user_id','=',auth()->user()->id]])
-                                    ->orWhere([['articles.content','LIKE',"%$search%"],['articles.user_id','=',auth()->user()->id]]);
+                                    ->orWhere([['articles.content','LIKE',"%$search%"],['articles.user_id','=',auth()->user()->id]])
+                                    ->orWhere([['articles.article_status','LIKE',"%$search%"],['articles.user_id','=',auth()->user()->id]])
+                                    ->orWhere([['masters.name','LIKE',"%$search%"],['articles.user_id','=',auth()->user()->id]]);
                             })->latest()->paginate(10);
         }else{
             $articles = DB::table('articles')
                             ->join('topics','articles.topic_id', '=', 'topics.topic_id')
-                            ->select('articles.*','topics.topic_name')
+                            ->join('masters','articles.user_id', '=', 'masters.id')
+                            ->select('articles.*','topics.topic_name','masters.name')
                             ->where(function($query) use ($search){
                                 $query->where('articles.title','LIKE',"%$search%")
                                     ->orWhere('topics.topic_name','LIKE',"%$search%")
-                                    ->orWhere('articles.content','LIKE',"%$search%");
+                                    ->orWhere('articles.content','LIKE',"%$search%")
+                                    ->orWhere('articles.article_status','LIKE',"%$search%")
+                                    ->orWhere('masters.name','LIKE',"%$search%");
                             })->latest()->paginate(10);
         }
         return $articles;

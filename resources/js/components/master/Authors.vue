@@ -163,7 +163,7 @@
                         icon: 'success',
                         title: 'Author Created Successfully'
                     });
-                    this.loadAuthors();
+                    this.getResults();
                     this.$Progress.finish();
                 })
                 .catch(()=>{
@@ -231,11 +231,11 @@
                         icon: 'success',
                         title: 'Author Updated Successfully'
                     });
-                    this.loadAuthors();
+                    this.getResults();
                     this.$Progress.finish();
                 })
                 .catch(()=>{
-                    //Failed
+                    
                     this.$Progress.fail();
                 })
             },
