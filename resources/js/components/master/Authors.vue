@@ -13,9 +13,9 @@
                         </div>
                         <div class="float-right">
                             <div class="input-group input-group-sm">
-                                <input type="text" name="search" v-model="search" @keyup="searchit" class="form-control float-right" placeholder="Search">
+                                <input type="text" name="search" v-model="search" @keyup.enter="searchResults()" class="form-control float-right" placeholder="Search">
                                 <div class="input-group-append">
-                                    <button type="submit" @click="searchit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <button type="submit" @click.prevent="searchResults()" class="btn btn-primary">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +51,11 @@
                         </table>
                     </div>
                     <div class="card-footer d-flex justify-content-center">
-                        <pagination :data="authors" @pagination-change-page="getResults">
+                        <pagination v-if="normalmode == true" :data="authors" @pagination-change-page="getResults">
+                            <span slot="prev-nav">&lt; Previous</span>
+                            <span slot="next-nav">Next &gt;</span>
+                        </pagination>
+                        <pagination v-if="searchmode == true" :data="authors" @pagination-change-page="searchResults">
                             <span slot="prev-nav">&lt; Previous</span>
                             <span slot="next-nav">Next &gt;</span>
                         </pagination>
@@ -129,6 +133,8 @@
                 editmode: false,
                 authors: {},
                 search: '',
+                normalmode: true,
+                searchmode: false,
                 form: new Form({
                     id: '',
                     name: '',
@@ -164,26 +170,38 @@
                     this.$Progress.fail();
                 })
             },
-            loadAuthors(){
+            getResults(page = 1){
                 this.$Progress.start();
-                axios.get('api/author').then(({ data }) => (this.authors = data))
-                .then(()=>{
-                    toast.fire({
-                        icon: 'success',
-                        title: 'Data Loaded Successfully'
-                    });
-                    this.$Progress.finish();
+                axios.get('api/author?page=' + page)
+				.then(response => {
+                    this.authors = response.data;
+                     this.$Progress.finish();
                 })
                 .catch(()=>{
-                    //Failed
                     this.$Progress.fail();
                 })
             },
-            getResults(page = 1){
-                axios.get('api/author?page=' + page)
-				.then(response => {
-					this.authors = response.data;
-				});
+            searchResults(page = 1){
+                let query = this.search;
+                this.$Progress.start();
+                if(query === ''){
+                    this.getResults();
+                    this.normalmode = true;
+                    this.searchmode = false;
+                    this.$Progress.finish();
+                }else{
+                    axios.get('api/findAuthor/'+query+'?page=' + page)
+                    .then((response) => {
+                        this.authors = response.data
+                        this.normalmode = false;
+                        this.searchmode = true;
+                        this.$Progress.finish();
+                    })
+                    .catch(() => {
+                        this.$Progress.fail();
+                    })
+                }
+                
             },
             editModal(author){
                 this.editmode = true;
@@ -268,23 +286,10 @@
                     )
                     $('#photo').val('');
                 }
-            },
-            searchit:_.debounce(() => {
-                Fire.$emit('searching');
-            },1000)
+            }
         },
         created() {
-            Fire.$on('searching',() => {
-                let query = this.search;
-                axios.get('api/findAuthor?q=' + query)
-                .then((data) => {
-                    this.authors = data.data
-                })
-                .catch(() => {
-
-                })
-            })
-            this.loadAuthors();
+            this.getResults();
         }
     }
 </script>

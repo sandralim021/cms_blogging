@@ -29,4 +29,4 @@ Route::prefix('master')->group(function() {
     Route::post('/login','Auth\MasterLoginController@login')->name('master.login.submit');
     Route::post('/logout','Auth\MasterLoginController@logout')->name('master.logout');
 });
-Route::get('{path}', 'HomeController@index')->where('path','([A-z\/_.\d-]+)?');
+Route::get('{path}', 'MasterController@index')->where('path','([A-z\/_.\d-]+)?');

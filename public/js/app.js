@@ -2106,6 +2106,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 Vue.filter('striphtml', function (value) {
@@ -2129,6 +2133,8 @@ Vue.filter('striphtml', function (value) {
         placeholder: 'Write something fantastic...'
       },
       editmode: false,
+      normalmode: true,
+      searchmode: false,
       articles: {},
       topics: '',
       search: '',
@@ -2161,32 +2167,42 @@ Vue.filter('striphtml', function (value) {
         _this.topics = response.data;
       });
     },
-    loadArticles: function loadArticles() {
+    getResults: function getResults() {
       var _this2 = this;
 
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       this.$Progress.start();
-      axios.get('api/article').then(function (_ref) {
-        var data = _ref.data;
-        return _this2.articles = data;
-      }).then(function () {
-        toast.fire({
-          icon: 'success',
-          title: 'Data Loaded Successfully'
-        });
+      axios.get('api/article?page=' + page).then(function (response) {
+        _this2.articles = response.data;
 
         _this2.$Progress.finish();
       })["catch"](function () {
-        //Failed
         _this2.$Progress.fail();
       });
     },
-    getResults: function getResults() {
+    searchResults: function searchResults() {
       var _this3 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('api/article?page=' + page).then(function (response) {
-        _this3.articles = response.data;
-      });
+      var query = this.search;
+      this.$Progress.start();
+
+      if (query === '') {
+        this.getResults();
+        this.normalmode = true;
+        this.searchmode = false;
+        this.$Progress.finish();
+      } else {
+        axios.get('api/findArticle/' + query + '?page=' + page).then(function (response) {
+          _this3.articles = response.data;
+          _this3.normalmode = false;
+          _this3.searchmode = true;
+
+          _this3.$Progress.finish();
+        })["catch"](function () {
+          _this3.$Progress.fail();
+        });
+      }
     },
     createArticle: function createArticle() {
       var _this4 = this;
@@ -2286,22 +2302,11 @@ Vue.filter('striphtml', function (value) {
         swal.fire('Failed!', 'Should be image file (.png / .jpg)', 'error');
         $('#photo').val('');
       }
-    },
-    searchit: _.debounce(function () {
-      Fire.$emit('searching');
-    }, 1000)
+    }
   },
   created: function created() {
-    var _this8 = this;
-
-    Fire.$on('searching', function () {
-      var query = _this8.search;
-      axios.get('api/findArticle?q=' + query).then(function (data) {
-        _this8.articles = data.data;
-      })["catch"](function () {});
-    });
     this.loadTopics();
-    this.loadArticles();
+    this.getResults();
   }
 });
 
@@ -2440,12 +2445,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editmode: false,
       authors: {},
       search: '',
+      normalmode: true,
+      searchmode: false,
       form: new Form({
         id: '',
         name: '',
@@ -2483,32 +2494,42 @@ __webpack_require__.r(__webpack_exports__);
         _this.$Progress.fail();
       });
     },
-    loadAuthors: function loadAuthors() {
+    getResults: function getResults() {
       var _this2 = this;
 
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       this.$Progress.start();
-      axios.get('api/author').then(function (_ref) {
-        var data = _ref.data;
-        return _this2.authors = data;
-      }).then(function () {
-        toast.fire({
-          icon: 'success',
-          title: 'Data Loaded Successfully'
-        });
+      axios.get('api/author?page=' + page).then(function (response) {
+        _this2.authors = response.data;
 
         _this2.$Progress.finish();
       })["catch"](function () {
-        //Failed
         _this2.$Progress.fail();
       });
     },
-    getResults: function getResults() {
+    searchResults: function searchResults() {
       var _this3 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('api/author?page=' + page).then(function (response) {
-        _this3.authors = response.data;
-      });
+      var query = this.search;
+      this.$Progress.start();
+
+      if (query === '') {
+        this.getResults();
+        this.normalmode = true;
+        this.searchmode = false;
+        this.$Progress.finish();
+      } else {
+        axios.get('api/findAuthor/' + query + '?page=' + page).then(function (response) {
+          _this3.authors = response.data;
+          _this3.normalmode = false;
+          _this3.searchmode = true;
+
+          _this3.$Progress.finish();
+        })["catch"](function () {
+          _this3.$Progress.fail();
+        });
+      }
     },
     editModal: function editModal(author) {
       this.editmode = true;
@@ -2590,21 +2611,10 @@ __webpack_require__.r(__webpack_exports__);
         swal.fire('Failed!', 'Should be image file (.png /.jpg)', 'error');
         $('#photo').val('');
       }
-    },
-    searchit: _.debounce(function () {
-      Fire.$emit('searching');
-    }, 1000)
+    }
   },
   created: function created() {
-    var _this7 = this;
-
-    Fire.$on('searching', function () {
-      var query = _this7.search;
-      axios.get('api/findAuthor?q=' + query).then(function (data) {
-        _this7.authors = data.data;
-      })["catch"](function () {});
-    });
-    this.loadAuthors();
+    this.getResults();
   }
 });
 
@@ -2907,12 +2917,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editmode: false,
       topics: {},
       search: '',
+      normalmode: true,
+      searchmode: false,
       form: new Form({
         topic_id: '',
         topic_name: '',
@@ -2995,18 +3011,13 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    loadTopics: function loadTopics() {
+    getResults: function getResults() {
       var _this4 = this;
 
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       this.$Progress.start();
-      axios.get('api/topic').then(function (_ref) {
-        var data = _ref.data;
-        return _this4.topics = data;
-      }).then(function () {
-        toast.fire({
-          icon: 'success',
-          title: 'Data Loaded Successfully'
-        });
+      axios.get('api/topic?page=' + page).then(function (response) {
+        _this4.topics = response.data;
 
         _this4.$Progress.finish();
       })["catch"](function () {
@@ -3014,28 +3025,33 @@ __webpack_require__.r(__webpack_exports__);
         _this4.$Progress.fail();
       });
     },
-    getResults: function getResults() {
+    searchResults: function searchResults() {
       var _this5 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('api/topic?page=' + page).then(function (response) {
-        _this5.topics = response.data;
-      });
-    },
-    searchit: _.debounce(function () {
-      Fire.$emit('searching');
-    }, 1000)
+      var query = this.search;
+      this.$Progress.start();
+
+      if (query === '') {
+        this.getResults();
+        this.normalmode = true;
+        this.searchmode = false;
+        this.$Progress.finish();
+      } else {
+        axios.get('api/findTopic/' + query + '?page=' + page).then(function (response) {
+          _this5.topics = response.data;
+          _this5.normalmode = false;
+          _this5.searchmode = true;
+
+          _this5.$Progress.finish();
+        })["catch"](function () {
+          _this5.$Progress.fail();
+        });
+      }
+    }
   },
   created: function created() {
-    var _this6 = this;
-
-    Fire.$on('searching', function () {
-      var query = _this6.search;
-      axios.get('api/findTopic?q=' + query).then(function (data) {
-        _this6.topics = data.data;
-      })["catch"](function () {});
-    });
-    this.loadTopics();
+    this.getResults();
   }
 });
 
@@ -3102,27 +3118,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editmode: false,
       users: {},
-      search: ''
+      search: '',
+      normalmode: true,
+      searchmode: false
     };
   },
   methods: {
-    loadUsers: function loadUsers() {
+    getResults: function getResults() {
       var _this = this;
 
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       this.$Progress.start();
-      axios.get('api/display_users').then(function (_ref) {
-        var data = _ref.data;
-        return _this.users = data;
-      }).then(function () {
-        toast.fire({
-          icon: 'success',
-          title: 'Data Loaded Successfully'
-        });
+      axios.get('api/display_users?page=' + page).then(function (response) {
+        _this.users = response.data;
 
         _this.$Progress.finish();
       })["catch"](function () {
@@ -3130,28 +3147,33 @@ __webpack_require__.r(__webpack_exports__);
         _this.$Progress.fail();
       });
     },
-    getResults: function getResults() {
+    searchResults: function searchResults() {
       var _this2 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get('api/display_users?page=' + page).then(function (response) {
-        _this2.users = response.data;
-      });
-    },
-    searchit: _.debounce(function () {
-      Fire.$emit('searching');
-    }, 1000)
+      var query = this.search;
+      this.$Progress.start();
+
+      if (query === '') {
+        this.getResults();
+        this.normalmode = true;
+        this.searchmode = false;
+        this.$Progress.finish();
+      } else {
+        axios.get('api/findUser/' + query + '?page=' + page).then(function (response) {
+          _this2.users = response.data;
+          _this2.normalmode = false;
+          _this2.searchmode = true;
+
+          _this2.$Progress.finish();
+        })["catch"](function () {
+          _this2.$Progress.fail();
+        });
+      }
+    }
   },
   created: function created() {
-    var _this3 = this;
-
-    Fire.$on('searching', function () {
-      var query = _this3.search;
-      axios.get('api/findUser?q=' + query).then(function (data) {
-        _this3.users = data.data;
-      })["catch"](function () {});
-    });
-    this.loadUsers();
+    this.getResults();
   }
 });
 
@@ -57964,7 +57986,15 @@ var render = function() {
                   },
                   domProps: { value: _vm.search },
                   on: {
-                    keyup: _vm.searchit,
+                    keyup: function($event) {
+                      if (
+                        !$event.type.indexOf("key") &&
+                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                      ) {
+                        return null
+                      }
+                      return _vm.searchResults()
+                    },
                     input: function($event) {
                       if ($event.target.composing) {
                         return
@@ -57978,11 +58008,16 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-default",
+                      staticClass: "btn btn-primary",
                       attrs: { type: "submit" },
-                      on: { click: _vm.searchit }
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.searchResults()
+                        }
+                      }
                     },
-                    [_c("i", { staticClass: "fas fa-search" })]
+                    [_vm._v("Search")]
                   )
                 ])
               ])
@@ -58070,26 +58105,51 @@ var render = function() {
             "div",
             { staticClass: "card-footer d-flex justify-content-center" },
             [
-              _c(
-                "pagination",
-                {
-                  attrs: { data: _vm.articles },
-                  on: { "pagination-change-page": _vm.getResults }
-                },
-                [
-                  _c(
-                    "span",
-                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
-                    [_vm._v("< Previous")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "span",
-                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
-                    [_vm._v("Next >")]
+              _vm.normalmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.articles },
+                      on: { "pagination-change-page": _vm.getResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
                   )
-                ]
-              )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.searchmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.articles },
+                      on: { "pagination-change-page": _vm.searchResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
+                  )
+                : _vm._e()
             ],
             1
           )
@@ -58586,7 +58646,15 @@ var render = function() {
                   },
                   domProps: { value: _vm.search },
                   on: {
-                    keyup: _vm.searchit,
+                    keyup: function($event) {
+                      if (
+                        !$event.type.indexOf("key") &&
+                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                      ) {
+                        return null
+                      }
+                      return _vm.searchResults()
+                    },
                     input: function($event) {
                       if ($event.target.composing) {
                         return
@@ -58600,11 +58668,16 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-default",
+                      staticClass: "btn btn-primary",
                       attrs: { type: "submit" },
-                      on: { click: _vm.searchit }
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.searchResults()
+                        }
+                      }
                     },
-                    [_c("i", { staticClass: "fas fa-search" })]
+                    [_vm._v("Search")]
                   )
                 ])
               ])
@@ -58676,26 +58749,51 @@ var render = function() {
             "div",
             { staticClass: "card-footer d-flex justify-content-center" },
             [
-              _c(
-                "pagination",
-                {
-                  attrs: { data: _vm.authors },
-                  on: { "pagination-change-page": _vm.getResults }
-                },
-                [
-                  _c(
-                    "span",
-                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
-                    [_vm._v("< Previous")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "span",
-                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
-                    [_vm._v("Next >")]
+              _vm.normalmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.authors },
+                      on: { "pagination-change-page": _vm.getResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
                   )
-                ]
-              )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.searchmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.authors },
+                      on: { "pagination-change-page": _vm.searchResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
+                  )
+                : _vm._e()
             ],
             1
           )
@@ -59419,7 +59517,15 @@ var render = function() {
                   },
                   domProps: { value: _vm.search },
                   on: {
-                    keyup: _vm.searchit,
+                    keyup: function($event) {
+                      if (
+                        !$event.type.indexOf("key") &&
+                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                      ) {
+                        return null
+                      }
+                      return _vm.searchResults()
+                    },
                     input: function($event) {
                       if ($event.target.composing) {
                         return
@@ -59433,11 +59539,16 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-default",
+                      staticClass: "btn btn-primary",
                       attrs: { type: "submit" },
-                      on: { click: _vm.searchit }
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.searchResults()
+                        }
+                      }
                     },
-                    [_c("i", { staticClass: "fas fa-search" })]
+                    [_vm._v("Search")]
                   )
                 ])
               ])
@@ -59508,26 +59619,51 @@ var render = function() {
             "div",
             { staticClass: "card-footer d-flex justify-content-center" },
             [
-              _c(
-                "pagination",
-                {
-                  attrs: { data: _vm.topics },
-                  on: { "pagination-change-page": _vm.getResults }
-                },
-                [
-                  _c(
-                    "span",
-                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
-                    [_vm._v("< Previous")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "span",
-                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
-                    [_vm._v("Next >")]
+              _vm.normalmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.topics },
+                      on: { "pagination-change-page": _vm.getResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
                   )
-                ]
-              )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.searchmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.topics },
+                      on: { "pagination-change-page": _vm.searchResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
+                  )
+                : _vm._e()
             ],
             1
           )
@@ -59829,7 +59965,15 @@ var render = function() {
                   },
                   domProps: { value: _vm.search },
                   on: {
-                    keyup: _vm.searchit,
+                    keyup: function($event) {
+                      if (
+                        !$event.type.indexOf("key") &&
+                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                      ) {
+                        return null
+                      }
+                      return _vm.searchResults()
+                    },
                     input: function($event) {
                       if ($event.target.composing) {
                         return
@@ -59843,11 +59987,16 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-default",
+                      staticClass: "btn btn-primary",
                       attrs: { type: "submit" },
-                      on: { click: _vm.searchit }
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.searchResults()
+                        }
+                      }
                     },
-                    [_c("i", { staticClass: "fas fa-search" })]
+                    [_vm._v("Search")]
                   )
                 ])
               ])
@@ -59889,26 +60038,51 @@ var render = function() {
             "div",
             { staticClass: "card-footer d-flex justify-content-center" },
             [
-              _c(
-                "pagination",
-                {
-                  attrs: { data: _vm.users },
-                  on: { "pagination-change-page": _vm.getResults }
-                },
-                [
-                  _c(
-                    "span",
-                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
-                    [_vm._v("< Previous")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "span",
-                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
-                    [_vm._v("Next >")]
+              _vm.normalmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.users },
+                      on: { "pagination-change-page": _vm.getResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
                   )
-                ]
-              )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.searchmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.users },
+                      on: { "pagination-change-page": _vm.searchResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
+                  )
+                : _vm._e()
             ],
             1
           )

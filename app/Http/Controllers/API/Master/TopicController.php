@@ -76,15 +76,10 @@ class TopicController extends Controller
         $topic = Topic::findOrFail($id);
         return $topic->delete();
     }
-    public function search(){
-        if ($search = \Request::get('q')) {
-            $topics = Topic::where(function($query) use ($search){
-                $query->where('topic_name','LIKE',"%$search%");
-            })->latest()->paginate(10);
-        }else{
-            $topics = Topic::latest()
-                            ->paginate(10);
-        }
+    public function search($search){
+        $topics = Topic::where(function($query) use ($search){
+                        $query->where('topic_name','LIKE',"%$search%");
+        })->latest()->paginate(10);
 
         return $topics;
     }

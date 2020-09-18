@@ -13,9 +13,9 @@
                         </div>
                         <div class="float-right">
                             <div class="input-group input-group-sm">
-                                <input type="text" name="search" v-model="search" @keyup="searchit" class="form-control float-right" placeholder="Search">
+                                <input type="text" name="search" v-model="search" @keyup.enter="searchResults()" class="form-control float-right" placeholder="Search">
                                 <div class="input-group-append">
-                                    <button type="submit" @click="searchit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <button type="submit" @click.prevent="searchResults()" class="btn btn-primary">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -54,7 +54,11 @@
                         </table>
                     </div>
                     <div class="card-footer d-flex justify-content-center">
-                        <pagination :data="topics" @pagination-change-page="getResults">
+                        <pagination v-if="normalmode == true" :data="topics" @pagination-change-page="getResults">
+                            <span slot="prev-nav">&lt; Previous</span>
+	                        <span slot="next-nav">Next &gt;</span>
+                        </pagination>
+                        <pagination v-if="searchmode == true" :data="topics" @pagination-change-page="searchResults">
                             <span slot="prev-nav">&lt; Previous</span>
 	                        <span slot="next-nav">Next &gt;</span>
                         </pagination>
@@ -112,6 +116,8 @@
                 editmode: false,
                 topics: {},
                 search: '',
+                normalmode: true,
+                searchmode: false,
                 form: new Form({
                     topic_id: '',
                     topic_name: '',
@@ -196,14 +202,11 @@
                     
                 })
             },
-            loadTopics(){
+            getResults(page = 1){
                 this.$Progress.start();
-                axios.get('api/topic').then(({ data }) => (this.topics = data))
-                .then(()=>{
-                    toast.fire({
-                        icon: 'success',
-                        title: 'Data Loaded Successfully'
-                    });
+                axios.get('api/topic?page=' + page)
+				.then(response => {
+                    this.topics = response.data;
                     this.$Progress.finish();
                 })
                 .catch(()=>{
@@ -211,28 +214,31 @@
                     this.$Progress.fail();
                 })
             },
-            getResults(page = 1){
-                axios.get('api/topic?page=' + page)
-				.then(response => {
-					this.topics = response.data;
-				});
+            searchResults(page = 1){
+                let query = this.search;
+                this.$Progress.start();
+                if(query === ''){
+                    this.getResults();
+                    this.normalmode = true;
+                    this.searchmode = false;
+                    this.$Progress.finish();
+                }else{
+                    axios.get('api/findTopic/'+query+'?page=' + page)
+                    .then((response) => {
+                        this.topics = response.data
+                        this.normalmode = false;
+                        this.searchmode = true;
+                        this.$Progress.finish();
+                    })
+                    .catch(() => {
+                        this.$Progress.fail();
+                    })
+                }
+                
             },
-            searchit:_.debounce(() => {
-                Fire.$emit('searching');
-            },1000)
         },
         created() {
-            Fire.$on('searching',() => {
-                let query = this.search;
-                axios.get('api/findTopic?q=' + query)
-                .then((data) => {
-                    this.topics = data.data
-                })
-                .catch(() => {
-
-                })
-            })
-            this.loadTopics();
+            this.getResults();
         }
     }
 </script>

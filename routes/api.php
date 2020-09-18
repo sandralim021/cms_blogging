@@ -29,10 +29,10 @@ Route::group(['middleware' => ['auth.master','auth:master-api']], function() {
     Route::get('display_users', 'API\Master\UserController@displayUsers');
 
     //Search
-    Route::get('findArticle', 'API\Master\ArticleController@search');
-    Route::get('findAuthor', 'API\Master\AuthorController@search');
-    Route::get('findTopic', 'API\Master\TopicController@search');
-    Route::get('findUser', 'API\Master\UserController@search');
+    Route::get('findArticle/{search}', 'API\Master\ArticleController@search');
+    Route::get('findAuthor/{search}', 'API\Master\AuthorController@search');
+    Route::get('findTopic/{search}', 'API\Master\TopicController@search');
+    Route::get('findUser/{search}', 'API\Master\UserController@search');
     //Article
     Route::get('get_topics', 'API\Master\ArticleController@get_topics');
 });

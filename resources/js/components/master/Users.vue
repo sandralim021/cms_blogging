@@ -9,9 +9,9 @@
                     <div class="card-header">
                         <div class="float-right">
                             <div class="input-group input-group-sm">
-                                <input type="text" name="search" v-model="search" @keyup="searchit" class="form-control float-right" placeholder="Search">
+                                <input type="text" name="search" v-model="search" @keyup.enter="searchResults()" class="form-control float-right" placeholder="Search">
                                 <div class="input-group-append">
-                                    <button type="submit" @click="searchit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <button type="submit" @click.prevent="searchResults()" class="btn btn-primary">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +38,11 @@
                         </table>
                     </div>
                     <div class="card-footer d-flex justify-content-center">
-                        <pagination :data="users" @pagination-change-page="getResults">
+                        <pagination v-if="normalmode == true" :data="users" @pagination-change-page="getResults">
+                            <span slot="prev-nav">&lt; Previous</span>
+	                        <span slot="next-nav">Next &gt;</span>
+                        </pagination>
+                        <pagination v-if="searchmode == true" :data="users" @pagination-change-page="searchResults">
                             <span slot="prev-nav">&lt; Previous</span>
 	                        <span slot="next-nav">Next &gt;</span>
                         </pagination>
@@ -56,48 +60,49 @@
             return{
                 editmode: false,
                 users: {},
-                search: ''
+                search: '',
+                normalmode: true,
+                searchmode: false
             }
         },
         methods: {
-            loadUsers(){
+            getResults(page = 1){
                 this.$Progress.start();
-                axios.get('api/display_users').then(({ data }) => (this.users = data))
-                .then(()=>{
-                    toast.fire({
-                        icon: 'success',
-                        title: 'Data Loaded Successfully'
-                    });
+                axios.get('api/display_users?page=' + page)
+				.then(response => {
+                    this.users = response.data;
                     this.$Progress.finish();
                 })
                 .catch(()=>{
                     //Failed
                     this.$Progress.fail();
                 })
+            },
+            searchResults(page = 1){
+                let query = this.search;
+                this.$Progress.start();
+                if(query === ''){
+                    this.getResults();
+                    this.normalmode = true;
+                    this.searchmode = false;
+                    this.$Progress.finish();
+                }else{
+                    axios.get('api/findUser/'+query+'?page=' + page)
+                    .then((response) => {
+                        this.users = response.data
+                        this.normalmode = false;
+                        this.searchmode = true;
+                        this.$Progress.finish();
+                    })
+                    .catch(() => {
+                        this.$Progress.fail();
+                    })
+                }
                 
             },
-            getResults(page = 1){
-                axios.get('api/display_users?page=' + page)
-				.then(response => {
-					this.users = response.data;
-				});
-            },
-            searchit:_.debounce(() => {
-                Fire.$emit('searching');
-            },1000)
         },
         created() {
-            Fire.$on('searching',() => {
-                let query = this.search;
-                axios.get('api/findUser?q=' + query)
-                .then((data) => {
-                    this.users = data.data
-                })
-                .catch(() => {
-
-                })
-            })
-            this.loadUsers();
+            this.getResults();
         }
     }
 </script>

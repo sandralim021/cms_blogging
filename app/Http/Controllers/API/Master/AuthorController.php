@@ -121,17 +121,11 @@ class AuthorController extends Controller
         return $author->delete();
     }
 
-    public function search(){
-        if ($search = \Request::get('q')) {
-            $authors = Master::where(function($query) use ($search){
-                $query->where([['name','LIKE',"%$search%"],['role','author']])
-                        ->orWhere([['email','LIKE',"%$search%"],['role','author']]);
-            })->paginate(10);
-        }else{
-            $authors = Master::where('role','author')
-                            ->latest()
-                            ->paginate(10);
-        }
+    public function search($search){
+        $authors = Master::where(function($query) use ($search){
+            $query->where([['name','LIKE',"%$search%"],['role','author']])
+                    ->orWhere([['email','LIKE',"%$search%"],['role','author']]);
+        })->paginate(10);
 
         return $authors;
     }

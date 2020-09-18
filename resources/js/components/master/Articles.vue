@@ -13,9 +13,9 @@
                         </div>
                         <div class="float-right">
                             <div class="input-group input-group-sm">
-                                <input type="text" name="search" v-model="search" @keyup="searchit" class="form-control float-right" placeholder="Search">
+                                <input type="text" name="search" @keyup.enter="searchResults()" v-model="search" class="form-control float-right" placeholder="Search">
                                 <div class="input-group-append">
-                                    <button type="submit" @click="searchit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                    <button type="submit" class="btn btn-primary" @click.prevent="searchResults()">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -60,7 +60,11 @@
                         </table>
                     </div>
                     <div class="card-footer d-flex justify-content-center">
-                       <pagination :data="articles" @pagination-change-page="getResults">
+                       <pagination v-if="normalmode == true" :data="articles" @pagination-change-page="getResults">
+                            <span slot="prev-nav">&lt; Previous</span>
+	                        <span slot="next-nav">Next &gt;</span>
+                        </pagination>
+                        <pagination v-if="searchmode == true" :data="articles" @pagination-change-page="searchResults">
                             <span slot="prev-nav">&lt; Previous</span>
 	                        <span slot="next-nav">Next &gt;</span>
                         </pagination>
@@ -164,6 +168,8 @@
                     placeholder: 'Write something fantastic...',
                 },
                 editmode: false,
+                normalmode: true,
+                searchmode: false,
                 articles: {},
                 topics: '',
                 search: '',
@@ -195,26 +201,38 @@
                        this.topics = response.data;
                     })
             },
-            loadArticles(){
+            getResults(page = 1){
                 this.$Progress.start();
-                axios.get('api/article').then(({ data }) => (this.articles = data))
-                .then(()=>{
-                    toast.fire({
-                        icon: 'success',
-                        title: 'Data Loaded Successfully'
-                    });
+                axios.get('api/article?page=' + page)
+				.then(response => {
+                    this.articles = response.data;
                     this.$Progress.finish();
                 })
                 .catch(()=>{
-                    //Failed
                     this.$Progress.fail();
                 })
             },
-            getResults(page = 1){
-                axios.get('api/article?page=' + page)
-				.then(response => {
-					this.articles = response.data;
-				});
+            searchResults(page = 1){
+                let query = this.search;
+                this.$Progress.start();
+                if(query === ''){
+                    this.getResults();
+                    this.normalmode = true;
+                    this.searchmode = false;
+                    this.$Progress.finish();
+                }else{
+                    axios.get('api/findArticle/'+query+'?page=' + page)
+                    .then((response) => {
+                        this.articles = response.data
+                        this.normalmode = false;
+                        this.searchmode = true;
+                        this.$Progress.finish();
+                    })
+                    .catch(() => {
+                        this.$Progress.fail();
+                    })
+                }
+                
             },
             createArticle(){
                 this.$Progress.start();
@@ -314,24 +332,11 @@
                     )
                     $('#photo').val('');
                 }
-            },
-            searchit:_.debounce(() => {
-                Fire.$emit('searching');
-            },1000)
+            }
         },
         created() {
-            Fire.$on('searching',() => {
-                let query = this.search;
-                axios.get('api/findArticle?q=' + query)
-                .then((data) => {
-                    this.articles = data.data
-                })
-                .catch(() => {
-
-                })
-            })
             this.loadTopics();
-            this.loadArticles();
+            this.getResults();
         }
     }
 </script>
