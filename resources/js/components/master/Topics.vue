@@ -33,7 +33,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(topic,index) in topics.data" :key="topic.topic_id">
-                                    <td>{{index + 1}}</td>
+                                    <td>{{(index + 1) + (topics.from - 1)}}</td>
                                     <td>{{topic.topic_name}}</td>
                                     <td v-if="topic.topic_status == '0'">
                                         <span class="badge bg-danger">Not Active</span>

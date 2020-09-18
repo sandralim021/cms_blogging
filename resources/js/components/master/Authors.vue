@@ -34,7 +34,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(author,index) in authors.data" :key="author.id">
-                                    <td>{{ index + 1 }}</td>
+                                    <td>{{(index + 1) + (authors.from - 1)}}</td>
                                     <td>{{ author.name }}</td>
                                     <td><img :src="'/img/user_photos/'+author.photo" width="50" height="50" class="img-circle"></td>
                                     <td>{{ author.email }}</td>

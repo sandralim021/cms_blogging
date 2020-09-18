@@ -58032,7 +58032,9 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.articles.data, function(article, index) {
                   return _c("tr", { key: article.article_id }, [
-                    _c("td", [_vm._v(_vm._s(index + 1))]),
+                    _c("td", [
+                      _vm._v(_vm._s(index + 1 + (_vm.articles.from - 1)))
+                    ]),
                     _vm._v(" "),
                     _c("th", [_vm._v(_vm._s(article.title))]),
                     _vm._v(" "),
@@ -58692,7 +58694,9 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.authors.data, function(author, index) {
                   return _c("tr", { key: author.id }, [
-                    _c("td", [_vm._v(_vm._s(index + 1))]),
+                    _c("td", [
+                      _vm._v(_vm._s(index + 1 + (_vm.authors.from - 1)))
+                    ]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(author.name))]),
                     _vm._v(" "),
@@ -59563,7 +59567,9 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.topics.data, function(topic, index) {
                   return _c("tr", { key: topic.topic_id }, [
-                    _c("td", [_vm._v(_vm._s(index + 1))]),
+                    _c("td", [
+                      _vm._v(_vm._s(index + 1 + (_vm.topics.from - 1)))
+                    ]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(topic.topic_name))]),
                     _vm._v(" "),
@@ -60011,7 +60017,9 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.users.data, function(user, index) {
                   return _c("tr", { key: user.id }, [
-                    _c("td", [_vm._v(_vm._s(index + 1))]),
+                    _c("td", [
+                      _vm._v(_vm._s(index + 1 + (_vm.users.from - 1)))
+                    ]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(user.name))]),
                     _vm._v(" "),

@@ -36,7 +36,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(article,index) in articles.data" :key="article.article_id">
-                                    <td>{{index + 1}}</td>
+                                    <td>{{(index + 1) + (articles.from - 1)}}</td>
                                     <th>{{article.title}}</th>
                                     <td><img :src="'/img/article_photos/'+article.photo" width="50" height="50" class="img-fluid"></td>
                                     <td>{{article.topic_name}}</td>
