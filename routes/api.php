@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth.master','auth:master-api']], function() {
 Route::group(['middleware' => 'auth:api'], function() {
     Route::get('user/articles', 'API\User\MainController@loadArticles');
     Route::get('user/topics', 'API\User\MainController@loadTopics');
-    Route::get('user/findArticle', 'API\User\MainController@search');
-    Route::get('user/TopicSearch', 'API\User\MainController@topicSearch');
+    Route::get('user/findArticle/{search}', 'API\User\MainController@search');
+    Route::get('user/TopicSearch/{search}', 'API\User\MainController@topicSearch');
 });
 

@@ -20,17 +20,27 @@
                     <hr>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <pagination :data="articles" @pagination-change-page="getResults">
+                    <pagination v-if="normalmode == true" :data="articles" @pagination-change-page="getResults">
                         <span slot="prev-nav">&lt; Previous</span>
                         <span slot="next-nav">Next &gt;</span>
                     </pagination>
+                    <pagination v-if="searchmode == true" :data="articles" @pagination-change-page="searchResults">
+                        <span slot="prev-nav">&lt; Previous</span>
+                        <span slot="next-nav">Next &gt;</span>
+                    </pagination>
+                    <pagination v-if="topicsearch == true" :data="articles" @pagination-change-page="TopicResults">
+                        <span slot="prev-nav">&lt; Previous</span>
+                        <span slot="next-nav">Next &gt;</span>
+                    </pagination>
+                    
                 </div>
             </div>
             <div class="col-md-4">
                 <span class="sponsors">Search Article</span>
                 <br>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" v-model="search" @keyup="searchit" type="search" placeholder="Search" aria-label="Search">
+                <form class="form-inline my-2 my-lg-0" @submit.prevent="searchResults()">
+                    <input class="form-control mr-sm-2" v-model="search" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
                 <br>
                 <span class="sponsors">Topics</span>
@@ -48,28 +58,16 @@
     export default {
         data(){
             return{
-                editmode: false,
                 articles: {},
                 topics: '',
-                search: ''
+                search: '',
+                topic_search: '',
+                normalmode: true,
+                searchmode: false,
+                topicsearch: false,
             }
         },
         methods: {
-            loadArticles(){
-                this.$Progress.start();
-                axios.get('api/user/articles').then(({ data }) => (this.articles = data))
-                .then(()=>{
-                    toast.fire({
-                        icon: 'success',
-                        title: 'Data Loaded Successfully'
-                    });
-                    this.$Progress.finish();
-                })
-                .catch(()=>{
-                    //Failed
-                    this.$Progress.fail();
-                })
-            },
             loadTopics(){
                 axios.get('api/user/topics')
                     .then((response) => {
@@ -89,32 +87,51 @@
                 })
             },
             TopicSearch(topic){
-                axios.get('api/user/TopicSearch?topic=' + topic)
-                .then((data) => {
-                    this.articles = data.data
+                this.topic_search = topic;
+                this.TopicResults();
+            },
+            TopicResults(page = 1){
+                this.$Progress.start();
+                axios.get('api/user/TopicSearch/'+this.topic_search+'?page='+page)
+                .then((response) => {
+                    this.articles = response.data
+                    this.normalmode = false;
+                    this.searchmode = false;
+                    this.topicsearch = true;
+                    this.$Progress.finish();
                 })
                 .catch(() => {
-
+                    this.$Progress.fail();
                 })
-
             },
-            searchit:_.debounce(() => {
-                Fire.$emit('searching');
-            },1000)
+            searchResults(page = 1){
+                this.$Progress.start();
+                let query = this.search;
+                if(query === ''){
+                    this.getResults();
+                    this.normalmode = true;
+                    this.searchmode = false;
+                    this.topicsearch = false;
+                    this.$Progress.finish();
+                }else{
+                    axios.get('api/user/findArticle/'+query+'?page=' + page)
+                    .then((data) => {
+                        this.articles = data.data
+                        this.normalmode = false;
+                        this.searchmode = true;
+                        this.topicsearch = false;
+                        this.$Progress.finish();
+                    })
+                    .catch(() => {
+                        
+                    })
+                }
+                
+            }
         },
         created(){
-            Fire.$on('searching',() => {
-                let query = this.search;
-                axios.get('api/user/findArticle?q=' + query)
-                .then((data) => {
-                    this.articles = data.data
-                })
-                .catch(() => {
-
-                })
-            })
             this.loadTopics();
-            this.loadArticles();
+            this.getResults();
         }
     }
 </script>

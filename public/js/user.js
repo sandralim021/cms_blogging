@@ -1954,78 +1954,98 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      editmode: false,
       articles: {},
       topics: '',
-      search: ''
+      search: '',
+      topic_search: '',
+      normalmode: true,
+      searchmode: false,
+      topicsearch: false
     };
   },
   methods: {
-    loadArticles: function loadArticles() {
+    loadTopics: function loadTopics() {
       var _this = this;
 
-      this.$Progress.start();
-      axios.get('api/user/articles').then(function (_ref) {
-        var data = _ref.data;
-        return _this.articles = data;
-      }).then(function () {
-        toast.fire({
-          icon: 'success',
-          title: 'Data Loaded Successfully'
-        });
-
-        _this.$Progress.finish();
-      })["catch"](function () {
-        //Failed
-        _this.$Progress.fail();
-      });
-    },
-    loadTopics: function loadTopics() {
-      var _this2 = this;
-
       axios.get('api/user/topics').then(function (response) {
-        _this2.topics = response.data;
+        _this.topics = response.data;
       });
     },
     getResults: function getResults() {
-      var _this3 = this;
+      var _this2 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       this.$Progress.start();
       axios.get('api/user/articles?page=' + page).then(function (response) {
-        _this3.articles = response.data;
+        _this2.articles = response.data;
 
-        _this3.$Progress.finish();
+        _this2.$Progress.finish();
       })["catch"](function () {
         //Failed
-        _this3.$Progress.fail();
+        _this2.$Progress.fail();
       });
     },
     TopicSearch: function TopicSearch(topic) {
+      this.topic_search = topic;
+      this.TopicResults();
+    },
+    TopicResults: function TopicResults() {
+      var _this3 = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      this.$Progress.start();
+      axios.get('api/user/TopicSearch/' + this.topic_search + '?page=' + page).then(function (response) {
+        _this3.articles = response.data;
+        _this3.normalmode = false;
+        _this3.searchmode = false;
+        _this3.topicsearch = true;
+
+        _this3.$Progress.finish();
+      })["catch"](function () {
+        _this3.$Progress.fail();
+      });
+    },
+    searchResults: function searchResults() {
       var _this4 = this;
 
-      axios.get('api/user/TopicSearch?topic=' + topic).then(function (data) {
-        _this4.articles = data.data;
-      })["catch"](function () {});
-    },
-    searchit: _.debounce(function () {
-      Fire.$emit('searching');
-    }, 1000)
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      this.$Progress.start();
+      var query = this.search;
+
+      if (query === '') {
+        this.getResults();
+        this.normalmode = true;
+        this.searchmode = false;
+        this.topicsearch = false;
+        this.$Progress.finish();
+      } else {
+        axios.get('api/user/findArticle/' + query + '?page=' + page).then(function (data) {
+          _this4.articles = data.data;
+          _this4.normalmode = false;
+          _this4.searchmode = true;
+          _this4.topicsearch = false;
+
+          _this4.$Progress.finish();
+        })["catch"](function () {});
+      }
+    }
   },
   created: function created() {
-    var _this5 = this;
-
-    Fire.$on('searching', function () {
-      var query = _this5.search;
-      axios.get('api/user/findArticle?q=' + query).then(function (data) {
-        _this5.articles = data.data;
-      })["catch"](function () {});
-    });
     this.loadTopics();
-    this.loadArticles();
+    this.getResults();
   }
 });
 
@@ -41459,26 +41479,74 @@ var render = function() {
             "div",
             { staticClass: "d-flex justify-content-center" },
             [
-              _c(
-                "pagination",
-                {
-                  attrs: { data: _vm.articles },
-                  on: { "pagination-change-page": _vm.getResults }
-                },
-                [
-                  _c(
-                    "span",
-                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
-                    [_vm._v("< Previous")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "span",
-                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
-                    [_vm._v("Next >")]
+              _vm.normalmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.articles },
+                      on: { "pagination-change-page": _vm.getResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
                   )
-                ]
-              )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.searchmode == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.articles },
+                      on: { "pagination-change-page": _vm.searchResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.topicsearch == true
+                ? _c(
+                    "pagination",
+                    {
+                      attrs: { data: _vm.articles },
+                      on: { "pagination-change-page": _vm.TopicResults }
+                    },
+                    [
+                      _c(
+                        "span",
+                        { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                        [_vm._v("< Previous")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "span",
+                        { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                        [_vm._v("Next >")]
+                      )
+                    ]
+                  )
+                : _vm._e()
             ],
             1
           )
@@ -41491,34 +41559,54 @@ var render = function() {
         _vm._v(" "),
         _c("br"),
         _vm._v(" "),
-        _c("form", { staticClass: "form-inline my-2 my-lg-0" }, [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.search,
-                expression: "search"
-              }
-            ],
-            staticClass: "form-control mr-sm-2",
-            attrs: {
-              type: "search",
-              placeholder: "Search",
-              "aria-label": "Search"
-            },
-            domProps: { value: _vm.search },
+        _c(
+          "form",
+          {
+            staticClass: "form-inline my-2 my-lg-0",
             on: {
-              keyup: _vm.searchit,
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.search = $event.target.value
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.searchResults()
               }
             }
-          })
-        ]),
+          },
+          [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.search,
+                  expression: "search"
+                }
+              ],
+              staticClass: "form-control mr-sm-2",
+              attrs: {
+                type: "search",
+                placeholder: "Search",
+                "aria-label": "Search"
+              },
+              domProps: { value: _vm.search },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.search = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-outline-success my-2 my-sm-0",
+                attrs: { type: "submit" }
+              },
+              [_vm._v("Search")]
+            )
+          ]
+        ),
         _vm._v(" "),
         _c("br"),
         _vm._v(" "),
