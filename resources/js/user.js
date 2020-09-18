@@ -39,6 +39,11 @@ const toast = swal.mixin({
 
 window.toast = toast;
 
+import moment from 'moment';
+Vue.filter('articleDate',function(created){
+    return moment(created).format('MMMM Do YYYY');
+});
+
 Vue.component('pagination', require('laravel-vue-pagination'));
 
 window.Fire = new Vue();

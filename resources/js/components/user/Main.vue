@@ -10,7 +10,7 @@
                     </div>
                     <div class="col-md-8">
                         <br>
-                        <span class="sub-article-date">April 21, 2020</span>
+                        <span class="sub-article-date">{{article.created_at | articleDate}}</span>
                         <br>
                         <a href="#" class="sub-article-title">{{article.title}}</a>
                         <br>
