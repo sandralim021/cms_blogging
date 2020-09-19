@@ -6,8 +6,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 let routes = [
-    { path: '/main', component: require('./components/user/Main.vue').default},
-    { path: '/article_content', component: require('./components/user/ArticleContent.vue').default}
+    { path: '/main', component: require('./components/user/Main.vue').default}
 ]
 
 const router = new VueRouter({

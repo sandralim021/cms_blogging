@@ -42,10 +42,10 @@
                                         <span class="badge bg-success">Active</span>
                                     </td>
                                     <td>
-                                        <a href="#" @click="editModal(topic)" class="btn btn-sm btn-warning">
+                                        <a href="" @click.prevent="editModal(topic)" class="btn btn-sm btn-warning">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a href="#" @click="deleteTopic(topic.topic_id)" class="btn btn-sm btn-danger">
+                                        <a href="" @click.prevent="deleteTopic(topic.topic_id)" class="btn btn-sm btn-danger">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>

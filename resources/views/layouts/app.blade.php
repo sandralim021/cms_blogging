@@ -36,11 +36,6 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <router-link to="/main" class="nav-link" active-class="active" exact>
-                                Articles
-                            </router-link>
-                        </li>
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
@@ -74,15 +69,18 @@
                 </div>
             </div>
         </nav>
-
+        
         <main class="py-4">
             @yield('content')
-            <router-view></router-view>
-            <!-- set progressbar -->
-            <vue-progress-bar></vue-progress-bar>
+            @auth('web')
+                <router-view></router-view>
+                <!-- set progressbar -->
+                <vue-progress-bar></vue-progress-bar>
+                <main-component></main-component>
+            @endauth
         </main>
     </div>
-    <footer class="page-footer font-small stylish-color-light bt-4 mt-4">
+    <footer class="page-footer font-small stylish-color-light bt-4 mt-4 sticky-bottom">
         <div class="footer-copyright py-3 text-center">
             Copyright 2020: CMS Blogging
         </div>

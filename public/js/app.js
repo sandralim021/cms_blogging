@@ -58075,9 +58075,10 @@ var render = function() {
                         "a",
                         {
                           staticClass: "btn btn-sm btn-warning",
-                          attrs: { href: "#" },
+                          attrs: { href: "" },
                           on: {
                             click: function($event) {
+                              $event.preventDefault()
                               return _vm.editModal(article)
                             }
                           }
@@ -58089,9 +58090,10 @@ var render = function() {
                         "a",
                         {
                           staticClass: "btn btn-sm btn-danger",
-                          attrs: { href: "#" },
+                          attrs: { href: "" },
                           on: {
                             click: function($event) {
+                              $event.preventDefault()
                               return _vm.deleteArticle(article.article_id)
                             }
                           }
@@ -58723,9 +58725,10 @@ var render = function() {
                         "a",
                         {
                           staticClass: "btn btn-sm btn-warning",
-                          attrs: { href: "#" },
+                          attrs: { href: "" },
                           on: {
                             click: function($event) {
+                              $event.preventDefault()
                               return _vm.editModal(author)
                             }
                           }
@@ -58737,9 +58740,10 @@ var render = function() {
                         "a",
                         {
                           staticClass: "btn btn-sm btn-danger",
-                          attrs: { href: "#" },
+                          attrs: { href: "" },
                           on: {
                             click: function($event) {
+                              $event.preventDefault()
                               return _vm.deleteAuthor(author.id)
                             }
                           }
@@ -59595,9 +59599,10 @@ var render = function() {
                         "a",
                         {
                           staticClass: "btn btn-sm btn-warning",
-                          attrs: { href: "#" },
+                          attrs: { href: "" },
                           on: {
                             click: function($event) {
+                              $event.preventDefault()
                               return _vm.editModal(topic)
                             }
                           }
@@ -59609,9 +59614,10 @@ var render = function() {
                         "a",
                         {
                           staticClass: "btn btn-sm btn-danger",
-                          attrs: { href: "#" },
+                          attrs: { href: "" },
                           on: {
                             click: function($event) {
+                              $event.preventDefault()
                               return _vm.deleteTopic(topic.topic_id)
                             }
                           }

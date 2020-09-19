@@ -44,7 +44,7 @@ class MainController extends Controller
                         ->join('masters','articles.user_id','=','masters.id')
                         ->select('articles.*','topics.topic_name','masters.name')
                         ->where(function($query) use ($search){
-                            $query->where('articles.topic_id','=',$search);
+                            $query->where([['articles.topic_id','=',$search],['articles.article_status','=','published']]);
                         })->latest()->paginate(10);
         
         return $articles;

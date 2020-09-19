@@ -50,10 +50,10 @@
                                         <span class="badge bg-success">Published</span>
                                     </td>
                                     <td>
-                                        <a href="#" @click="editModal(article)" class="btn btn-sm btn-warning">
+                                        <a href="" @click.prevent="editModal(article)" class="btn btn-sm btn-warning">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a href="#" @click="deleteArticle(article.article_id)" class="btn btn-sm btn-danger">
+                                        <a href="" @click.prevent="deleteArticle(article.article_id)" class="btn btn-sm btn-danger">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>

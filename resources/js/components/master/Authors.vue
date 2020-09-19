@@ -39,10 +39,10 @@
                                     <td><img :src="'/img/user_photos/'+author.photo" width="50" height="50" class="img-circle"></td>
                                     <td>{{ author.email }}</td>
                                     <td>
-                                        <a href="#" @click="editModal(author)" class="btn btn-sm btn-warning">
+                                        <a href="" @click.prevent="editModal(author)" class="btn btn-sm btn-warning">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a href="#" @click="deleteAuthor(author.id)" class="btn btn-sm btn-danger">
+                                        <a href="" @click.prevent="deleteAuthor(author.id)" class="btn btn-sm btn-danger">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>
