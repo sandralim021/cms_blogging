@@ -6,7 +6,8 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 let routes = [
-    { path: '/main', component: require('./components/user/Main.vue').default}
+    { path: '/main', component: require('./components/user/Main.vue').default},
+    { path: '/article_content', component: require('./components/user/ArticleContent.vue').default}
 ]
 
 const router = new VueRouter({
@@ -45,6 +46,7 @@ Vue.filter('articleDate',function(created){
 });
 
 Vue.component('pagination', require('laravel-vue-pagination'));
+Vue.component('main-component', require('./components/user/Main.vue').default);
 
 window.Fire = new Vue();
 
