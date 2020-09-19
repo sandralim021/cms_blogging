@@ -5,6 +5,7 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
+    background-color: #ffffff;
 }
 footer {
     position: absolute;
@@ -35,7 +36,7 @@ footer {
     font-weight: bold;
 }
 .sub-article-category,.sub-article-date{
-    color: rgba(0,0,0,0.4);
+    color: rgba(0, 0, 0, 0.7);
     font-size: 0.8em;
 }
 .sub-article-author{
