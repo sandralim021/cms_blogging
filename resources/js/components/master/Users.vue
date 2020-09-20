@@ -68,7 +68,7 @@
         methods: {
             getResults(page = 1){
                 this.$Progress.start();
-                axios.get('api/display_users?page=' + page)
+                axios.get('/api/display_users?page=' + page)
 				.then(response => {
                     this.users = response.data;
                     this.$Progress.finish();
@@ -87,7 +87,7 @@
                     this.searchmode = false;
                     this.$Progress.finish();
                 }else{
-                    axios.get('api/findUser/'+query+'?page=' + page)
+                    axios.get('/api/findUser/'+query+'?page=' + page)
                     .then((response) => {
                         this.users = response.data
                         this.normalmode = false;

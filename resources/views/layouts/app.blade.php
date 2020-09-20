@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>CMS Blogging</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -76,7 +76,6 @@
                 <router-view></router-view>
                 <!-- set progressbar -->
                 <vue-progress-bar></vue-progress-bar>
-                <main-component></main-component>
             @endauth
         </main>
     </div>

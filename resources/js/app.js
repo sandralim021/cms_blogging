@@ -13,6 +13,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 let routes = [
+    { path: '/', component: require('./components/master/Dashboard.vue').default},
     { path: '/users', component: require('./components/master/Users.vue').default},
     { path: '/authors', component: require('./components/master/Authors.vue').default},
     { path: '/topics', component: require('./components/master/Topics.vue').default},
@@ -22,7 +23,8 @@ let routes = [
 
 const router = new VueRouter({
     mode: 'history',
-    routes // short for `routes: routes`
+    routes,
+    base: '/master'
 })
 
 import VueProgressBar from 'vue-progressbar'

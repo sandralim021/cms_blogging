@@ -134,7 +134,7 @@
             },
             createTopic(){
                 this.$Progress.start();
-                this.form.post('api/topic')
+                this.form.post('/api/topic')
                 .then(()=>{
                     $('#topic_modal').modal('hide');
                     toast.fire({
@@ -157,7 +157,7 @@
             },
             updateTopic(){
                 this.$Progress.start();
-                this.form.put('api/topic/'+this.form.topic_id)
+                this.form.put('/api/topic/'+this.form.topic_id)
                 .then(()=>{
                     $('#topic_modal').modal('hide');
                     toast.fire({
@@ -184,13 +184,13 @@
                 }).then((result) => {
                     if (result.value) {
                         // Send Request To The Server
-                        this.form.delete('api/topic/'+id).then(() =>{
+                        this.form.delete('/api/topic/'+id).then(() =>{
                             swal.fire(
                                 'Deleted!',
                                 'Record has been deleted.',
                                 'success'
                             )
-                            this.loadTopics();
+                            this.getResults();
                         }).catch(()=>{
                             swal.fire(
                                 'Failed!',
@@ -204,7 +204,7 @@
             },
             getResults(page = 1){
                 this.$Progress.start();
-                axios.get('api/topic?page=' + page)
+                axios.get('/api/topic?page=' + page)
 				.then(response => {
                     this.topics = response.data;
                     this.$Progress.finish();
@@ -223,7 +223,7 @@
                     this.searchmode = false;
                     this.$Progress.finish();
                 }else{
-                    axios.get('api/findTopic/'+query+'?page=' + page)
+                    axios.get('/api/findTopic/'+query+'?page=' + page)
                     .then((response) => {
                         this.topics = response.data
                         this.normalmode = false;

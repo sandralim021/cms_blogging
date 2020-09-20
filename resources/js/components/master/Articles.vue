@@ -198,14 +198,14 @@
                 $('#article_modal').modal('show');      
             },
             loadTopics(){
-                axios.get('api/get_topics')
+                axios.get('/api/get_topics')
                     .then((response) => {
                        this.topics = response.data;
                     })
             },
             getResults(page = 1){
                 this.$Progress.start();
-                axios.get('api/article?page=' + page)
+                axios.get('/api/article?page=' + page)
 				.then(response => {
                     this.articles = response.data;
                     this.$Progress.finish();
@@ -223,7 +223,7 @@
                     this.searchmode = false;
                     this.$Progress.finish();
                 }else{
-                    axios.get('api/findArticle/'+query+'?page=' + page)
+                    axios.get('/api/findArticle/'+query+'?page=' + page)
                     .then((response) => {
                         this.articles = response.data
                         this.normalmode = false;
@@ -238,7 +238,7 @@
             },
             createArticle(){
                 this.$Progress.start();
-                this.form.post('api/article')
+                this.form.post('/api/article')
                 .then(()=>{
                     $('#article_modal').modal('hide');
                     toast.fire({
@@ -272,7 +272,7 @@
                     this.form.photo = this.form.current_photo;
                 }
                 this.$Progress.start();
-                this.form.put('api/article/'+this.form.article_id)
+                this.form.put('/api/article/'+this.form.article_id)
                 .then(()=>{
                     $('#article_modal').modal('hide');
                     toast.fire({
@@ -299,13 +299,13 @@
                 }).then((result) => {
                     if (result.value) {
                         // Send Request To The Server
-                        this.form.delete('api/article/'+id).then(() =>{
+                        this.form.delete('/api/article/'+id).then(() =>{
                             swal.fire(
                                 'Deleted!',
                                 'Record has been deleted.',
                                 'success'
                             )
-                            this.loadArticles();
+                            this.getResults();
                         }).catch(()=>{
                             swal.fire(
                                 'Failed!',

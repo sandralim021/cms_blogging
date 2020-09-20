@@ -156,7 +156,7 @@
             },
             createAuthor(){
                 this.$Progress.start();
-                this.form.post('api/author')
+                this.form.post('/api/author')
                 .then(()=>{
                     $('#author_modal').modal('hide');
                     toast.fire({
@@ -172,7 +172,7 @@
             },
             getResults(page = 1){
                 this.$Progress.start();
-                axios.get('api/author?page=' + page)
+                axios.get('/api/author?page=' + page)
 				.then(response => {
                     this.authors = response.data;
                      this.$Progress.finish();
@@ -190,7 +190,7 @@
                     this.searchmode = false;
                     this.$Progress.finish();
                 }else{
-                    axios.get('api/findAuthor/'+query+'?page=' + page)
+                    axios.get('/api/findAuthor/'+query+'?page=' + page)
                     .then((response) => {
                         this.authors = response.data
                         this.normalmode = false;
@@ -224,7 +224,7 @@
                     this.form.photo = this.form.current_photo;
                 }
                 this.$Progress.start();
-                this.form.put('api/author/'+this.form.id)
+                this.form.put('/api/author/'+this.form.id)
                 .then(()=>{
                     $('#author_modal').modal('hide');
                     toast.fire({
@@ -251,13 +251,13 @@
                 }).then((result) => {
                     if (result.value) {
                         // Send Request To The Server
-                        this.form.delete('api/author/'+id).then(() =>{
+                        this.form.delete('/api/author/'+id).then(() =>{
                             swal.fire(
                                 'Deleted!',
                                 'Record has been deleted.',
                                 'success'
                             )
-                            this.loadAuthors();
+                            this.getResults();
                         }).catch(()=>{
                             swal.fire(
                                 'Failed!',

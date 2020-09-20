@@ -22,11 +22,17 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('users/logout','Auth\LoginController@user_logout')->name('user.logout');
 
-
 Route::prefix('master')->group(function() {
     Route::get('/','MasterController@index')->name('master.dashboard');
     Route::get('/login','Auth\MasterLoginController@showLogInForm')->name('master.login');
     Route::post('/login','Auth\MasterLoginController@login')->name('master.login.submit');
     Route::post('/logout','Auth\MasterLoginController@logout')->name('master.logout');
 });
-Route::get('{path}', 'HomeController@index')->where('path','([A-z\/_.\d-]+)?');
+//Route::get('{path}', 'MasterController@index')->where('path','([A-z\/_.\d-]+)?');
+Route::get('/master/{path?}', function () {
+    return redirect()->action('MasterController@index');
+})->where('path','([A-z\/_.\d-]+)?');
+
+Route::get('/home/{path?}', function () {
+    return redirect()->action('HomeController@index');
+})->where('path', '([A-z\/_.\d-]+)?');

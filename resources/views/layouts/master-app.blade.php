@@ -12,7 +12,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>AdminLTE 3 | Starter</title>
+  <title>CMS Blogging | Master</title>
 
   <link rel="stylesheet" href="/css/app.css">
 </head>
@@ -44,7 +44,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="./img/person.png" class="img-circle elevation-2" alt="User Image">
+          <img src="../img/user_photos/{{ Auth::user()->photo }}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="#" class="d-block">{{ Auth::user()->name }}</a>
@@ -125,9 +125,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-        <router-view></router-view>
-        <!-- set progressbar -->
-        <vue-progress-bar></vue-progress-bar>
+        @yield('content')
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

@@ -6,12 +6,13 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 let routes = [
-    { path: '/main', component: require('./components/user/Main.vue').default}
+    { path: '/', component: require('./components/user/Home.vue').default}
 ]
 
 const router = new VueRouter({
     mode: 'history',
-    routes // short for `routes: routes`
+    routes, // short for `routes: routes`
+    base: '/home' 
 })
 
 import VueProgressBar from 'vue-progressbar'
@@ -45,7 +46,6 @@ Vue.filter('articleDate',function(created){
 });
 
 Vue.component('pagination', require('laravel-vue-pagination'));
-Vue.component('main-component', require('./components/user/Main.vue').default);
 
 window.Fire = new Vue();
 
