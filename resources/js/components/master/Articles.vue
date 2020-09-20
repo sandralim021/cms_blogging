@@ -121,7 +121,7 @@
                             <div class="form-group row">
                                 <label for="content" class="col-sm-2 col-form-label">Content</label>
                                 <div class="col-sm-10">
-                                     <quill-editor v-model="form.content" name="content" :class="{ 'is-invalid': form.errors.has('topic') }" :options="editorOption" style="height: 350px; padding-bottom: 75px;"></quill-editor>
+                                     <quill-editor v-model="form.content" :options="editorOption" name="content" :class="{ 'is-invalid': form.errors.has('topic') }"  style="height: 350px; padding-bottom: 75px;"></quill-editor>
                                      <has-error :form="form" field="content"></has-error>
                                 </div>
                             </div>
@@ -168,6 +168,27 @@
             return{
                 editorOption: {
                     placeholder: 'Write something fantastic...',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                            ['blockquote', 'code-block'],
+
+                            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+                            [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+                            [{ 'direction': 'rtl' }],                         // text direction
+
+                            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                            [{ 'font': [] }],
+                            [{ 'align': [] }],
+
+                            ['clean']                                         // remove formatting button
+                        ]
+                    }
                 },
                 editmode: false,
                 normalmode: true,

@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    CMS Blogging System 
+                    Blog System with Laravel and Vue 
                 </div>
             </div>
         </div>
