@@ -2783,7 +2783,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.form.put('/api/profile/').then(function () {
-        _this.$Progress.finish();
+        window.location.reload();
       })["catch"](function () {
         _this.$Progress.fail();
       });
@@ -2819,10 +2819,6 @@ __webpack_require__.r(__webpack_exports__);
       _this3.form.current_photo = data.photo;
       _this3.form.email = data.email;
       _this3.form.password = data.password;
-      toast.fire({
-        icon: 'success',
-        title: 'Data Loaded Successfully'
-      });
 
       _this3.$Progress.finish();
     })["catch"](function () {

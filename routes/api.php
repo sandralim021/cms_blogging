@@ -42,5 +42,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('user/topics', 'API\User\MainController@loadTopics');
     Route::get('user/findArticle/{search}', 'API\User\MainController@search');
     Route::get('user/TopicSearch/{search}', 'API\User\MainController@topicSearch');
+    Route::get('user/profile', 'API\User\MainController@profile');
+    Route::put('user/profile', 'API\User\MainController@updateProfile');
 });
 

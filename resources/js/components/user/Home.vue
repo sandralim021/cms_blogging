@@ -93,14 +93,14 @@
         },
         methods: {
             loadTopics(){
-                axios.get('api/user/topics')
+                axios.get('/api/user/topics')
                     .then((response) => {
                        this.topics = response.data;
                     })
             },
             getResults(page = 1){
                 this.$Progress.start();
-                axios.get('api/user/articles?page=' + page)
+                axios.get('/api/user/articles?page=' + page)
 				.then(response => {
                     this.articles = response.data;
                     this.$Progress.finish();
@@ -119,7 +119,7 @@
                 //Changing the condition
                 this.contentmode = false;
                 this.articlemode = true;
-                axios.get('api/user/TopicSearch/'+this.topic_search+'?page='+page)
+                axios.get('/api/user/TopicSearch/'+this.topic_search+'?page='+page)
                 .then((response) => {
                     this.articles = response.data
                     this.normalmode = false;
@@ -144,7 +144,7 @@
                     this.topicsearch = false;
                     this.$Progress.finish();
                 }else{
-                    axios.get('api/user/findArticle/'+query+'?page=' + page)
+                    axios.get('/api/user/findArticle/'+query+'?page=' + page)
                     .then((data) => {
                         this.articles = data.data
                         this.normalmode = false;

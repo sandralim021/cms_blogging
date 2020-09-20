@@ -118,7 +118,7 @@
                 }
                 this.form.put('/api/profile/')
                 .then(()=>{
-                    this.$Progress.finish();
+                    window.location.reload();
                 })
                 .catch(()=>{
                     this.$Progress.fail();
@@ -155,10 +155,6 @@
                 this.form.current_photo = data.photo;
                 this.form.email = data.email;
                 this.form.password = data.password;
-                toast.fire({
-                    icon: 'success',
-                    title: 'Data Loaded Successfully'
-                });
                 this.$Progress.finish();
             })
             .catch(()=>{

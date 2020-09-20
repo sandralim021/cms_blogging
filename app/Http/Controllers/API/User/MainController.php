@@ -49,4 +49,26 @@ class MainController extends Controller
         
         return $articles;
     }
+
+    public function profile(){
+        return auth('api')->user();
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth('api')->user();
+        
+        $this->validate($request,[
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:users,email,'.$user->id,
+            'password' => 'sometimes|required|min:6'
+        ]);
+
+        if(!empty($request->password)){
+            $request->merge(['password' => Hash::make($request['password'])]);
+        }
+
+        $user->update($request->all());
+        return ['message' => "success"];
+    }
 }

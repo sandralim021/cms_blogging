@@ -6,13 +6,14 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 let routes = [
-    { path: '/', component: require('./components/user/Home.vue').default}
+    { path: '/', component: require('./components/user/Home.vue').default},
+    { path: '/profile', component: require('./components/user/Profile.vue').default}
 ]
 
 const router = new VueRouter({
     mode: 'history',
     routes, // short for `routes: routes`
-    base: '/home' 
+    base: '/home'
 })
 
 import VueProgressBar from 'vue-progressbar'
@@ -44,6 +45,12 @@ import moment from 'moment';
 Vue.filter('articleDate',function(created){
     return moment(created).format('MMMM Do YYYY');
 });
+
+import { Form, HasError, AlertError } from 'vform';
+window.Form = Form;
+Vue.component(HasError.name, HasError)
+Vue.component(AlertError.name, AlertError)
+
 
 Vue.component('pagination', require('laravel-vue-pagination'));
 
