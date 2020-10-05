@@ -79784,7 +79784,7 @@ var app = new Vue({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\cms_blogging\resources\js\user.js */"./resources/js/user.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\laravue_blog\resources\js\user.js */"./resources/js/user.js");
 
 
 /***/ })

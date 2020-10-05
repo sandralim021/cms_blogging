@@ -3190,8 +3190,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -60140,17 +60138,6 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(user.name))]),
                     _vm._v(" "),
-                    _c("td", [
-                      _c("img", {
-                        staticClass: "img-fluid",
-                        attrs: {
-                          src: "/img/user_photos/" + user.photo,
-                          width: "50",
-                          height: "50"
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(user.email))])
                   ])
                 }),
@@ -60232,8 +60219,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("#")]),
         _vm._v(" "),
         _c("th", [_vm._v("Name")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Photo")]),
         _vm._v(" "),
         _c("th", [_vm._v("Email")])
       ])
@@ -76164,8 +76149,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\cms_blogging\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\cms_blogging\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\laravue_blog\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\laravue_blog\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

@@ -23,7 +23,6 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
-                                    <th>Photo</th>
                                     <th>Email</th>
                                 </tr>
                             </thead>
@@ -31,7 +30,6 @@
                                 <tr v-for="(user,index) in users.data" :key="user.id">
                                     <td>{{(index + 1) + (users.from - 1)}}</td>
                                     <td>{{user.name}}</td>
-                                    <td><img :src="'/img/user_photos/'+user.photo" width="50" height="50" class="img-fluid"></td>
                                     <td>{{user.email}}</td>
                                 </tr>
                             </tbody>
