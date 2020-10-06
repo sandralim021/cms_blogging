@@ -1,7 +1,7 @@
 ## Blog Website with Vue and Laravel
 A Blog website where the admin and authors can create, edit and publish articles to make available on public (users). A user can view the articles made by admin and authors and user can sort the viewing of articles by searching or choosing the topic on the list.
 
-Please note this project is made while I'm learning Vue.js and Laravel Framework that's why you may encounter bugs on running this project. So it is still on development but you can download and clone it.
+Please note this project is made while I'm learning Vue.js and Laravel Framework that's why you may encounter bugs on running this project. So it is still on development but you can download or clone it.
 
 ## Programming Languages
 This project is made by Boostrap, Vue.js and Laravel Framework.
@@ -16,7 +16,7 @@ This project is made by Boostrap, Vue.js and Laravel Framework.
 * Run ` php artisan migrate ` 
 * Run ` php artisan db:seed ` to add admin information to database
 * Run ` php artisan passport:install ` to generate passport keys
-* Now you can run and use the project!!!
+* Done!!!
 
 ## Screenshots
 ### Admin and Author Login
