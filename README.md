@@ -1,7 +1,8 @@
 ## Blog Website with Vue and Laravel
 A Blog website where the admin and authors can create, edit and publish articles to make available on public (users). A user can view the articles made by admin and authors and user can sort the viewing of articles by searching or choosing the topic on the list.
 
-I built this using Boostrap, Vue.js and Laravel Framework.
+## Programming Technologies
+This project is built using Boostrap, Vue.js and Laravel Framework.
 
 ## Installation
 * Clone the repo ` https://github.com/sandralim021/laravue_blog.git `
