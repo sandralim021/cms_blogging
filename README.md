@@ -10,7 +10,7 @@ This project is made by Boostrap, Vue.js and Laravel Framework.
 * Clone the repo ` https://github.com/sandralim021/laravue_blog.git `
 * ` cd ` to project folder
 * Run ` composer install `
-* Rename `.env.example` to `.env` and set your database information 
+* Duplicate `.env.example` file and rename it to `.env` and set your database information 
 * Run ` php artisan key:generate ` to generate the app key
 * Run ` npm install `
 * Run ` php artisan migrate ` 
