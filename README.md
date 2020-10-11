@@ -20,6 +20,9 @@ This project is built using Boostrap, Vue.js and Laravel Framework.
 Email: admin@gmail.com\
 Password: admin123
 
+## Database
+The SQL dump is in `_SQL/laravue_blog.sql`
+
 ## Screenshots
 ### Admin and Author Login
 ![Admin and Author Login](screenshots/Admin%20and%20Author%20Login.PNG)
