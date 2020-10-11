@@ -17,7 +17,7 @@ This project is built using Boostrap, Vue.js and Laravel Framework.
 * Done!!!
 
 ## Admin Credentials
-Email: admin@gmail.com
+Email: admin@gmail.com__
 Password: admin123
 
 ## Screenshots
