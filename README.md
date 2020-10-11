@@ -16,6 +16,10 @@ This project is built using Boostrap, Vue.js and Laravel Framework.
 * Run ` php artisan passport:install ` to generate passport keys
 * Done!!!
 
+## Admin Credentials
+Email: admin@gmail.com
+Password: admin123
+
 ## Screenshots
 ### Admin and Author Login
 ![Admin and Author Login](screenshots/Admin%20and%20Author%20Login.PNG)
