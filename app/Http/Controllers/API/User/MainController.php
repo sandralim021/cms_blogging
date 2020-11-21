@@ -50,6 +50,18 @@ class MainController extends Controller
         return $articles;
     }
 
+    public function view_article($article_id){
+        $article =  DB::table('articles')
+                ->join('topics','articles.topic_id','=','topics.topic_id')
+                ->join('masters','articles.user_id','=','masters.id')
+                ->select('articles.*','topics.topic_name','masters.name')
+                ->where('articles.article_id','=',$article_id)
+                ->first();
+        
+        return json_encode($article);
+        
+    }
+
     public function profile(){
         return auth('api')->user();
     }
