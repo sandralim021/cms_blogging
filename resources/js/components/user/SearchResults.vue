@@ -1,6 +1,8 @@
 <template>          
         <div class="col-md-8">
-            <span class="recent-articles">Results For: {{ this.$route.query.article }}</span>
+            <span v-if="this.$parent.search_article == true" span class="recent-articles">Results For: {{ this.$route.query.article }}</span>
+            <span v-if="this.$parent.search_topic == true" span class="recent-articles">Results For Topic: {{ this.$route.query.topic_name }}</span>
+
             <hr>
             <div class="row mb-3" v-for="article in articles.data" :key="article.article_id">
                 <div class="col-md-4">
@@ -18,7 +20,11 @@
                 <hr>
             </div>
             <div class="d-flex justify-content-center">
-                <pagination :data="articles" @pagination-change-page="searchResults">
+                <pagination v-if="this.$parent.search_article == true" :data="articles" @pagination-change-page="searchResults">
+                    <span slot="prev-nav">&lt; Previous</span>
+                    <span slot="next-nav">Next &gt;</span>
+                </pagination>
+                <pagination v-if="this.$parent.search_topic == true" :data="articles" @pagination-change-page="topicResults">
                     <span slot="prev-nav">&lt; Previous</span>
                     <span slot="next-nav">Next &gt;</span>
                 </pagination>
@@ -30,17 +36,10 @@
     export default {
         data(){
             return{
-                articles: {},
-                topics: ''   
+                articles: {}
             }
         },
         methods: {
-            loadTopics(){
-                axios.get('/api/user/topics')
-                    .then((response) => {
-                       this.topics = response.data;
-                })
-            },
             searchResults(page = 1){
                 this.$Progress.start();
                 let query = this.$route.query.article;
@@ -55,22 +54,33 @@
                 
                 
             },
-        },
-        created(){
-            this.loadTopics();
-            Fire.$on('searching',() => {
+            topicResults(page = 1){
                 this.$Progress.start();
-                let query = this.$route.query.article;
-                axios.get('/api/user/findArticle/'+query)
-                .then((data) => {
-                    this.articles = data.data
+                let query = this.$route.query.topic_id;
+                axios.get('/api/user/TopicSearch/'+query+'?page='+page)
+                .then((response) => {
+                    this.articles = response.data
                     this.$Progress.finish();
                 })
                 .catch(() => {
                     this.$Progress.fail();
                 })
+            }
+        },
+        created(){
+            Fire.$on('search_article',() => {
+                this.searchResults();
             })
-            this.searchResults();
+            Fire.$on('search_topic',() => {
+                this.topicResults();
+            })
+            // Changing Condition
+            if(this.$parent.search_article == true){
+                this.searchResults();
+            }
+            if(this.$parent.search_topic == true){
+                this.topicResults();
+            }
             
         }
     }

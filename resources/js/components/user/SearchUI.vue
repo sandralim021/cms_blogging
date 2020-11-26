@@ -9,7 +9,7 @@
         <br>
         <span class="sponsors">Topics</span>
         <div class="list-group">
-            <a v-for="topic in topics" :key="topic.topic_id" @click.prevent="TopicSearch(topic.topic_id)" href="#" class="list-group-item list-group-item-action select-topic">
+            <a v-for="topic in topics" :key="topic.topic_id" @click.prevent="topicSearch(topic.topic_id,topic.topic_name)" href="#" class="list-group-item list-group-item-action select-topic">
                 {{ topic.topic_name }}
             </a>
         </div>
@@ -25,22 +25,40 @@
             }
         },
         methods: {
-            searchit: _.debounce(() => {
-                Fire.$emit('searching');
+            search_article: _.debounce(() => {
+                Fire.$emit('search_article');
+            }),
+            search_topic: _.debounce(() => {
+                Fire.$emit('search_topic');
             }),
 
             searchResults(){
                 if(this.$route.name == 'search'){
                     //this.$router.push({query: {article: this.search}});
+                    this.$parent.search_article = true;
+                    this.$parent.search_topic = false;
                     this.$router.push({ query: Object.assign({}, this.$route.query, { article: this.search }) });
-                    this.searchit();
+                    this.search_article();
                 }else{
+                    this.$parent.search_article = true;
+                    this.$parent.search_topic = false;
                     this.$router.push({name: 'search', query: {article: this.search} });
                 }
                 
             },
-            topicSearch(){
-
+            topicSearch(id,name){
+                if(this.$route.name == 'search'){
+                    //this.$router.push({query: {article: this.search}});
+                    this.$parent.search_article = false;
+                    this.$parent.search_topic = true;
+                    this.$router.push({ query: Object.assign({}, this.$route.query, { topic_id: id, topic_name: name }) });
+                    this.search_topic();
+                }else{
+                    this.$parent.search_article = false;
+                    this.$parent.search_topic = true;
+                    this.$router.push({name: 'search', query: {topic_id: id, topic_name: name} });
+                }
+                
             },
             loadTopics(){
                 axios.get('/api/user/topics')

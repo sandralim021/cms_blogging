@@ -2108,29 +2108,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      articles: {},
-      topics: ''
+      articles: {}
     };
   },
   methods: {
-    loadTopics: function loadTopics() {
-      var _this = this;
-
-      axios.get('/api/user/topics').then(function (response) {
-        _this.topics = response.data;
-      });
-    },
     searchResults: function searchResults() {
-      var _this2 = this;
+      var _this = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
       this.$Progress.start();
       var query = this.$route.query.article;
       axios.get('/api/user/findArticle/' + query + '?page=' + page).then(function (data) {
-        _this2.articles = data.data;
+        _this.articles = data.data;
+
+        _this.$Progress.finish();
+      })["catch"](function () {
+        _this.$Progress.fail();
+      });
+    },
+    topicResults: function topicResults() {
+      var _this2 = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      this.$Progress.start();
+      var query = this.$route.query.topic_id;
+      axios.get('/api/user/TopicSearch/' + query + '?page=' + page).then(function (response) {
+        _this2.articles = response.data;
 
         _this2.$Progress.finish();
       })["catch"](function () {
@@ -2141,20 +2153,20 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this3 = this;
 
-    this.loadTopics();
-    Fire.$on('searching', function () {
-      _this3.$Progress.start();
-
-      var query = _this3.$route.query.article;
-      axios.get('/api/user/findArticle/' + query).then(function (data) {
-        _this3.articles = data.data;
-
-        _this3.$Progress.finish();
-      })["catch"](function () {
-        _this3.$Progress.fail();
-      });
+    Fire.$on('search_article', function () {
+      _this3.searchResults();
     });
-    this.searchResults();
+    Fire.$on('search_topic', function () {
+      _this3.topicResults();
+    }); // Changing Condition
+
+    if (this.$parent.search_article == true) {
+      this.searchResults();
+    }
+
+    if (this.$parent.search_topic == true) {
+      this.topicResults();
+    }
   }
 });
 
@@ -2195,19 +2207,26 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    searchit: _.debounce(function () {
-      Fire.$emit('searching');
+    search_article: _.debounce(function () {
+      Fire.$emit('search_article');
+    }),
+    search_topic: _.debounce(function () {
+      Fire.$emit('search_topic');
     }),
     searchResults: function searchResults() {
       if (this.$route.name == 'search') {
         //this.$router.push({query: {article: this.search}});
+        this.$parent.search_article = true;
+        this.$parent.search_topic = false;
         this.$router.push({
           query: Object.assign({}, this.$route.query, {
             article: this.search
           })
         });
-        this.searchit();
+        this.search_article();
       } else {
+        this.$parent.search_article = true;
+        this.$parent.search_topic = false;
         this.$router.push({
           name: 'search',
           query: {
@@ -2216,7 +2235,30 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    topicSearch: function topicSearch() {},
+    topicSearch: function topicSearch(id, name) {
+      if (this.$route.name == 'search') {
+        //this.$router.push({query: {article: this.search}});
+        this.$parent.search_article = false;
+        this.$parent.search_topic = true;
+        this.$router.push({
+          query: Object.assign({}, this.$route.query, {
+            topic_id: id,
+            topic_name: name
+          })
+        });
+        this.search_topic();
+      } else {
+        this.$parent.search_article = false;
+        this.$parent.search_topic = true;
+        this.$router.push({
+          name: 'search',
+          query: {
+            topic_id: id,
+            topic_name: name
+          }
+        });
+      }
+    },
     loadTopics: function loadTopics() {
       var _this = this;
 
@@ -64200,9 +64242,17 @@ var render = function() {
     "div",
     { staticClass: "col-md-8" },
     [
-      _c("span", { staticClass: "recent-articles" }, [
-        _vm._v("Results For: " + _vm._s(this.$route.query.article))
-      ]),
+      this.$parent.search_article == true
+        ? _c("span", { staticClass: "recent-articles", attrs: { span: "" } }, [
+            _vm._v("Results For: " + _vm._s(this.$route.query.article))
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      this.$parent.search_topic == true
+        ? _c("span", { staticClass: "recent-articles", attrs: { span: "" } }, [
+            _vm._v("Results For Topic: " + _vm._s(this.$route.query.topic_name))
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _c("hr"),
       _vm._v(" "),
@@ -64268,22 +64318,51 @@ var render = function() {
         "div",
         { staticClass: "d-flex justify-content-center" },
         [
-          _c(
-            "pagination",
-            {
-              attrs: { data: _vm.articles },
-              on: { "pagination-change-page": _vm.searchResults }
-            },
-            [
-              _c("span", { attrs: { slot: "prev-nav" }, slot: "prev-nav" }, [
-                _vm._v("< Previous")
-              ]),
-              _vm._v(" "),
-              _c("span", { attrs: { slot: "next-nav" }, slot: "next-nav" }, [
-                _vm._v("Next >")
-              ])
-            ]
-          )
+          this.$parent.search_article == true
+            ? _c(
+                "pagination",
+                {
+                  attrs: { data: _vm.articles },
+                  on: { "pagination-change-page": _vm.searchResults }
+                },
+                [
+                  _c(
+                    "span",
+                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                    [_vm._v("< Previous")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                    [_vm._v("Next >")]
+                  )
+                ]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          this.$parent.search_topic == true
+            ? _c(
+                "pagination",
+                {
+                  attrs: { data: _vm.articles },
+                  on: { "pagination-change-page": _vm.topicResults }
+                },
+                [
+                  _c(
+                    "span",
+                    { attrs: { slot: "prev-nav" }, slot: "prev-nav" },
+                    [_vm._v("< Previous")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "span",
+                    { attrs: { slot: "next-nav" }, slot: "next-nav" },
+                    [_vm._v("Next >")]
+                  )
+                ]
+              )
+            : _vm._e()
         ],
         1
       )
@@ -64384,7 +64463,7 @@ var render = function() {
             on: {
               click: function($event) {
                 $event.preventDefault()
-                return _vm.TopicSearch(topic.topic_id)
+                return _vm.topicSearch(topic.topic_id, topic.topic_name)
               }
             }
           },
@@ -80179,7 +80258,11 @@ Vue.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ ".
 window.Fire = new Vue();
 var app = new Vue({
   el: '#user',
-  router: router
+  router: router,
+  data: {
+    search_article: false,
+    search_topic: false
+  }
 });
 
 /***/ }),

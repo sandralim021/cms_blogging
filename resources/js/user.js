@@ -62,5 +62,9 @@ window.Fire = new Vue();
 
 const app = new Vue({
     el: '#user',
-    router
+    router,
+    data:{
+        search_article: false,
+        search_topic: false
+    }
 });
