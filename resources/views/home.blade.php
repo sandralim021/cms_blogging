@@ -1,8 +1,14 @@
 @extends('layouts.app')
     @auth('web')
         @section('content')
-            <router-view></router-view>
-            <!-- set progressbar -->
+            <!-- Set progressbar -->
             <vue-progress-bar></vue-progress-bar>
+            <!-- Router view -->
+            <div class="container">
+                <div class="row mt-2">
+                    <router-view></router-view>
+                    <search-ui></search-ui>
+                </div>
+            </div>
         @endsection
     @endauth

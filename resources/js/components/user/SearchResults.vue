@@ -1,6 +1,6 @@
 <template>          
         <div class="col-md-8">
-            <span class="recent-articles">Articles</span>
+            <span class="recent-articles">Results For: {{ this.$route.query.article }}</span>
             <hr>
             <div class="row mb-3" v-for="article in articles.data" :key="article.article_id">
                 <div class="col-md-4">
@@ -18,7 +18,7 @@
                 <hr>
             </div>
             <div class="d-flex justify-content-center">
-                <pagination :data="articles" @pagination-change-page="getResults">
+                <pagination :data="articles" @pagination-change-page="searchResults">
                     <span slot="prev-nav">&lt; Previous</span>
                     <span slot="next-nav">Next &gt;</span>
                 </pagination>
@@ -31,7 +31,7 @@
         data(){
             return{
                 articles: {},
-                topics: ''       
+                topics: ''   
             }
         },
         methods: {
@@ -39,24 +39,39 @@
                 axios.get('/api/user/topics')
                     .then((response) => {
                        this.topics = response.data;
-                    })
+                })
             },
-            getResults(page = 1){
+            searchResults(page = 1){
                 this.$Progress.start();
-                axios.get('/api/user/articles?page=' + page)
-				.then(response => {
-                    this.articles = response.data;
+                let query = this.$route.query.article;
+                axios.get('/api/user/findArticle/'+query+'?page=' + page)
+                .then((data) => {
+                    this.articles = data.data
                     this.$Progress.finish();
                 })
-                .catch(()=>{
-                    //Failed
+                .catch(() => {
                     this.$Progress.fail();
                 })
-            }
+                
+                
+            },
         },
         created(){
             this.loadTopics();
-            this.getResults();
+            Fire.$on('searching',() => {
+                this.$Progress.start();
+                let query = this.$route.query.article;
+                axios.get('/api/user/findArticle/'+query)
+                .then((data) => {
+                    this.articles = data.data
+                    this.$Progress.finish();
+                })
+                .catch(() => {
+                    this.$Progress.fail();
+                })
+            })
+            this.searchResults();
+            
         }
     }
 </script>

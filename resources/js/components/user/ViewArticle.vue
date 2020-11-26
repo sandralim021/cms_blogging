@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="col-md-8">
          <router-link to="/">
                 <i class="nav-icon fas fa-arrow-left"> Back</i>
         </router-link>
@@ -8,13 +8,9 @@
         <br>
         <span class="author-name">By {{ content.author }} - {{content.topic}} - {{ content.created_at | articleDate }}</span>
         <hr>
-        <div class="row mt-3">
-            <div class="col-md-8">
-                <img class="img-fluid" width="800" height="400" :src="'/img/article_photos/'+content.photo">
-                <hr>
-                <p v-html="content.content"></p>
-            </div>
-        </div>
+        <img class="img-fluid" width="800" height="400" :src="'/img/article_photos/'+content.photo">
+        <hr>
+        <p v-html="content.content"></p>
     </div>
 </template>
 
