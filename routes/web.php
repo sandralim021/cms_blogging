@@ -21,6 +21,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('users/logout','Auth\LoginController@user_logout')->name('user.logout');
+Route::get('/profile', 'HomeController@profile')->name('profile');
 
 Route::prefix('master')->group(function() {
     Route::get('/','MasterController@index')->name('master.dashboard');
@@ -30,4 +31,5 @@ Route::prefix('master')->group(function() {
 });
 Route::get('master/{path}', 'MasterController@index')->where('path','([A-z\/_.\d-]+)?');
 Route::get('home/{path}', 'HomeController@index')->where('path','([A-z\/_.\d-]+)?');
+Route::get('profile/{path}', 'HomeController@profile')->where('path','([A-z\/_.\d-]+)?');
 

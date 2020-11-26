@@ -7,12 +7,13 @@ Vue.use(VueRouter)
 
 let routes = [
     { path: '/', component: require('./components/user/Home.vue').default},
-    { path: '/profile', component: require('./components/user/Profile.vue').default},
     { path: '/view_article/:article_id', name:'view_article', component: require('./components/user/ViewArticle.vue').default},
     { path: '/search', name:'search', component: require('./components/user/SearchResults.vue').default },
 ]
 
 Vue.component('search-ui', require('./components/user/SearchUI.vue').default);
+Vue.component('profile', require('./components/user/Profile.vue').default);
+
 
 const router = new VueRouter({
     mode: 'history',

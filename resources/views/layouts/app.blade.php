@@ -47,16 +47,16 @@
                                 </li>
                             @endif
                         @else
-                            <li class="nav-item">
-                                <router-link to="/" class="nav-link" active-class="active" exact>Articles</router-link>
+                            <li class="nav-item {{ (request()->segment(1) == 'home') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('home') }}">Articles</a>
                             </li>
-                            <li class="nav-item dropdown">
+                            <li class="nav-item dropdown {{ (request()->segment(1) == 'profile') ? 'active' : '' }}">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <router-link to="/profile" class="dropdown-item">Profile</router-link>
+                                    <a href="{{ route('profile') }}" class="dropdown-item {{ (request()->segment(1) == 'profile') ? 'active' : '' }}">Profile</a>
                                     <a class="dropdown-item" href="{{ route('user.logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
