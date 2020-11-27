@@ -37,7 +37,7 @@
                     //this.$router.push({query: {article: this.search}});
                     this.$parent.search_article = true;
                     this.$parent.search_topic = false;
-                    this.$router.push({ query: Object.assign({}, this.$route.query, { article: this.search }) });
+                    this.$router.replace({ query: {article: this.search}});
                     this.search_article();
                 }else{
                     this.$parent.search_article = true;
@@ -51,7 +51,7 @@
                     //this.$router.push({query: {article: this.search}});
                     this.$parent.search_article = false;
                     this.$parent.search_topic = true;
-                    this.$router.push({ query: Object.assign({}, this.$route.query, { topic_id: id, topic_name: name }) });
+                    this.$router.replace({ query: { topic_id: id, topic_name: name}});
                     this.search_topic();
                 }else{
                     this.$parent.search_article = false;
