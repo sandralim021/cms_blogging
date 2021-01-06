@@ -1936,6 +1936,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2279,6 +2284,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -63970,7 +63980,9 @@ var render = function() {
               _vm._v(" "),
               _c("span", { staticClass: "sub-article-category" }, [
                 _vm._v(_vm._s(article.topic_name))
-              ])
+              ]),
+              _vm._v(" "),
+              _vm._m(0, true)
             ],
             1
           ),
@@ -64006,7 +64018,19 @@ var render = function() {
     2
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "mt-3" }, [
+      _c("i", { staticClass: "far fa-thumbs-up" }),
+      _vm._v("0 Likes\n                "),
+      _c("i", { staticClass: "far fa-comment ml-2" }),
+      _vm._v("0 Comments\n            ")
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -64484,54 +64508,72 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "col-md-8" },
-    [
-      _c("router-link", { attrs: { to: "/" } }, [
-        _c("i", { staticClass: "nav-icon fas fa-arrow-left" }, [
-          _vm._v(" Back")
-        ])
-      ]),
-      _vm._v(" "),
-      _c("br"),
-      _vm._v(" "),
-      _c("span", { staticClass: "recent-articles" }, [
-        _vm._v(_vm._s(_vm.content.title))
-      ]),
-      _vm._v(" "),
-      _c("br"),
-      _vm._v(" "),
-      _c("span", { staticClass: "author-name" }, [
-        _vm._v(
-          "By " +
-            _vm._s(_vm.content.author) +
-            " - " +
-            _vm._s(_vm.content.topic) +
-            " - " +
-            _vm._s(_vm._f("articleDate")(_vm.content.created_at))
-        )
-      ]),
-      _vm._v(" "),
-      _c("hr"),
-      _vm._v(" "),
-      _c("img", {
-        staticClass: "img-fluid",
-        attrs: {
-          width: "800",
-          height: "400",
-          src: "/img/article_photos/" + _vm.content.photo
-        }
-      }),
-      _vm._v(" "),
-      _c("hr"),
-      _vm._v(" "),
-      _c("p", { domProps: { innerHTML: _vm._s(_vm.content.content) } })
-    ],
-    1
-  )
+  return _c("div", { staticClass: "col-md-8" }, [
+    _c("br"),
+    _vm._v(" "),
+    _c("span", { staticClass: "recent-articles" }, [
+      _vm._v(_vm._s(_vm.content.title))
+    ]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("span", { staticClass: "author-name" }, [
+      _vm._v(
+        "By " +
+          _vm._s(_vm.content.author) +
+          " - " +
+          _vm._s(_vm.content.topic) +
+          " - " +
+          _vm._s(_vm._f("articleDate")(_vm.content.created_at))
+      )
+    ]),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("img", {
+      staticClass: "img-fluid",
+      attrs: {
+        width: "800",
+        height: "400",
+        src: "/img/article_photos/" + _vm.content.photo
+      }
+    }),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("p", { domProps: { innerHTML: _vm._s(_vm.content.content) } }),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _vm._m(0),
+    _vm._v(" "),
+    _vm._m(1)
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "float-left" }, [
+      _c("i", { staticClass: "far fa-comment" }),
+      _vm._v(" "),
+      _c("b", [_vm._v("0 Comments")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "float-right" }, [
+      _c("a", { attrs: { href: "#" } }, [
+        _c("i", { staticClass: "far fa-thumbs-up" })
+      ]),
+      _vm._v(" "),
+      _c("b", [_vm._v("Like this post (0 Likes)")])
+    ])
+  }
+]
 render._withStripped = true
 
 

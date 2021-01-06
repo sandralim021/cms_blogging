@@ -14,6 +14,11 @@
                     <br>
                     <span class="sub-article-author">By <span class="author-name">{{article.name}}</span></span>
                     <span class="sub-article-category">{{article.topic_name}}</span>
+                    <div class="mt-3">
+                        <i class="far fa-thumbs-up"></i>0 Likes
+                        <i class="far fa-comment ml-2"></i>0 Comments
+                    </div>
+                    
                 </div>
                 <hr>
             </div>

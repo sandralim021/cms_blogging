@@ -1,8 +1,5 @@
 <template>
     <div class="col-md-8">
-         <router-link to="/">
-                <i class="nav-icon fas fa-arrow-left"> Back</i>
-        </router-link>
         <br>
         <span class="recent-articles">{{content.title}}</span>
         <br>
@@ -11,6 +8,14 @@
         <img class="img-fluid" width="800" height="400" :src="'/img/article_photos/'+content.photo">
         <hr>
         <p v-html="content.content"></p>
+        <hr>
+        <div class="float-left">
+            <i class="far fa-comment"></i> <b>0 Comments</b>   
+        </div>
+        <div class="float-right">
+            <a href="#"><i class="far fa-thumbs-up"></i></a> <b>Like this post (0 Likes)</b>  
+        </div>
+             
     </div>
 </template>
 
