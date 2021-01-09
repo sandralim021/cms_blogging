@@ -13,7 +13,7 @@
             <i class="far fa-comment"></i> <b>0 Comments</b>   
         </div>
         <div class="float-right">
-            <a href="#"><i class="far fa-thumbs-up"></i></a> <b>Like this post (0 Likes)</b>  
+            <a href="" @click.prevent="LikeArticle"><i class="fa-thumbs-up" :class="[like ? 'fas' : 'far']"></i></a> <b>{{ like ? 'Liked' : 'Like'}} (0 Likes)</b>  
         </div>
              
     </div>
@@ -23,15 +23,31 @@
    export default {
         data(){
             return {
-              content: {
+                like: false,
+                content: {
                     article_id: '',
                     title: '',
                     topic: '',
                     photo: '',
                     content: '',
                     author: '',
-                    created_at: ''
+                    created_at: '',
                 }
+            }
+        },
+
+        methods:{
+            LikeArticle(){
+                axios.post('/api/user/like/add_like', {
+                    article_id: this.content.article_id,
+                })
+                .then(()=>{
+                    this.like = true;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
             }
         },
 
@@ -39,7 +55,7 @@
             this.$Progress.start();
             axios.get(`/api/user/view_article/${this.$route.params.article_id}`)
             .then(({ data }) => {
-              //Passing value into content
+                //Passing value into contents
                 this.content.article_id = data.article_id;
                 this.content.title = data.title;
                 this.content.topic = data.topic_name;

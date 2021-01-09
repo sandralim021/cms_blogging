@@ -2308,6 +2308,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      like: false,
       content: {
         article_id: '',
         title: '',
@@ -2319,25 +2320,38 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
   },
+  methods: {
+    LikeArticle: function LikeArticle() {
+      var _this = this;
+
+      axios.post('/api/user/like/add_like', {
+        article_id: this.content.article_id
+      }).then(function () {
+        _this.like = true;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  },
   created: function created() {
-    var _this = this;
+    var _this2 = this;
 
     this.$Progress.start();
     axios.get("/api/user/view_article/".concat(this.$route.params.article_id)).then(function (_ref) {
       var data = _ref.data;
-      //Passing value into content
-      _this.content.article_id = data.article_id;
-      _this.content.title = data.title;
-      _this.content.topic = data.topic_name;
-      _this.content.photo = data.photo;
-      _this.content.content = data.content;
-      _this.content.author = data.name;
-      _this.content.created_at = data.created_at;
+      //Passing value into contents
+      _this2.content.article_id = data.article_id;
+      _this2.content.title = data.title;
+      _this2.content.topic = data.topic_name;
+      _this2.content.photo = data.photo;
+      _this2.content.content = data.content;
+      _this2.content.author = data.name;
+      _this2.content.created_at = data.created_at;
 
-      _this.$Progress.finish();
+      _this2.$Progress.finish();
     })["catch"](function () {
       //Failed
-      _this.$Progress.fail();
+      _this2.$Progress.fail();
     });
   }
 });
@@ -64547,7 +64561,28 @@ var render = function() {
     _vm._v(" "),
     _vm._m(0),
     _vm._v(" "),
-    _vm._m(1)
+    _c("div", { staticClass: "float-right" }, [
+      _c(
+        "a",
+        {
+          attrs: { href: "" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              return _vm.LikeArticle($event)
+            }
+          }
+        },
+        [
+          _c("i", {
+            staticClass: "fa-thumbs-up",
+            class: [_vm.like ? "fas" : "far"]
+          })
+        ]
+      ),
+      _vm._v(" "),
+      _c("b", [_vm._v(_vm._s(_vm.like ? "Liked" : "Like") + " (0 Likes)")])
+    ])
   ])
 }
 var staticRenderFns = [
@@ -64559,18 +64594,6 @@ var staticRenderFns = [
       _c("i", { staticClass: "far fa-comment" }),
       _vm._v(" "),
       _c("b", [_vm._v("0 Comments")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "float-right" }, [
-      _c("a", { attrs: { href: "#" } }, [
-        _c("i", { staticClass: "far fa-thumbs-up" })
-      ]),
-      _vm._v(" "),
-      _c("b", [_vm._v("Like this post (0 Likes)")])
     ])
   }
 ]
