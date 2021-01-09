@@ -2342,6 +2342,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this2 = this;
 
+    // Create multiple requests for viewing article and like status
     this.$Progress.start();
     axios.get("/api/user/view_article/".concat(this.$route.params.article_id)).then(function (_ref) {
       var data = _ref.data;

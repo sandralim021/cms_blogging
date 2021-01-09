@@ -60,6 +60,7 @@
         },
 
         created() {
+            // Create multiple requests for viewing article and like status
             this.$Progress.start();
             axios.get(`/api/user/view_article/${this.$route.params.article_id}`)
             .then(({ data }) => {

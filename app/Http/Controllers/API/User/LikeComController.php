@@ -9,6 +9,13 @@ use App\Like;
 
 class LikeComController extends Controller
 {
+    public function like_status(){
+        $user_id = auth('api')->user()->id;
+        return DB::table('likes')
+            ->where('article_id', '=', $article_id)
+            ->where('user_id', '=', $user_id)
+            ->get();
+    }
     public function add_like($article_id){
         $user_id = auth('api')->user()->id;
         $data = Like::create([
