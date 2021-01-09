@@ -2321,16 +2321,22 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    LikeArticle: function LikeArticle() {
+    LikeFunction: function LikeFunction() {
       var _this = this;
 
-      axios.post('/api/user/like/add_like', {
-        article_id: this.content.article_id
-      }).then(function () {
-        _this.like = true;
-      })["catch"](function (error) {
-        console.log(error);
-      });
+      if (this.like == false) {
+        axios.post('/api/user/like/add_like/' + this.content.article_id).then(function () {
+          _this.like = true;
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      } else if (this.like == true) {
+        axios["delete"]('/api/user/like/remove_like/' + this.content.article_id).then(function () {
+          _this.like = false;
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
     }
   },
   created: function created() {
@@ -64569,7 +64575,7 @@ var render = function() {
           on: {
             click: function($event) {
               $event.preventDefault()
-              return _vm.LikeArticle($event)
+              return _vm.LikeFunction($event)
             }
           }
         },

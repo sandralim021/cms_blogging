@@ -13,7 +13,7 @@
             <i class="far fa-comment"></i> <b>0 Comments</b>   
         </div>
         <div class="float-right">
-            <a href="" @click.prevent="LikeArticle"><i class="fa-thumbs-up" :class="[like ? 'fas' : 'far']"></i></a> <b>{{ like ? 'Liked' : 'Like'}} (0 Likes)</b>  
+            <a href="" @click.prevent="LikeFunction"><i class="fa-thumbs-up" :class="[like ? 'fas' : 'far']"></i></a> <b>{{ like ? 'Liked' : 'Like'}} (0 Likes)</b>  
         </div>
              
     </div>
@@ -37,16 +37,24 @@
         },
 
         methods:{
-            LikeArticle(){
-                axios.post('/api/user/like/add_like', {
-                    article_id: this.content.article_id,
-                })
-                .then(()=>{
-                    this.like = true;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            LikeFunction(){
+                if(this.like==false){
+                    axios.post('/api/user/like/add_like/'+this.content.article_id)
+                    .then(()=>{
+                        this.like = true;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }else if(this.like==true){
+                    axios.delete('/api/user/like/remove_like/'+this.content.article_id)
+                    .then(()=>{
+                        this.like = false;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                }
 
             }
         },
