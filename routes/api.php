@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('user/profile', 'API\User\MainController@profile');
     Route::put('user/profile', 'API\User\MainController@updateProfile');
     //Like
-    Route::post('user/like/like_status/{article_id}','API\User\LikeComController@like_status');
+    Route::get('user/like/like_status/{article_id}','API\User\LikeComController@like_status');
     Route::post('user/like/add_like/{article_id}','API\User\LikeComController@add_like');
     Route::delete('user/like/remove_like/{article_id}','API\User\LikeComController@remove_like');
 });

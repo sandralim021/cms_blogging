@@ -62,24 +62,33 @@
         created() {
             // Create multiple requests for viewing article and like status
             this.$Progress.start();
-            axios.get(`/api/user/view_article/${this.$route.params.article_id}`)
-            .then(({ data }) => {
+            const article_id = this.$route.params.article_id;
+            axios.all([
+                axios.get('/api/user/view_article/'+article_id), 
+                axios.get('/api/user/like/like_status/'+article_id)
+            ])
+            .then(axios.spread((obj1,obj2) => {
                 //Passing value into contents
-                this.content.article_id = data.article_id;
-                this.content.title = data.title;
-                this.content.topic = data.topic_name;
-                this.content.photo = data.photo;
-                this.content.content = data.content;
-                this.content.author = data.name;
-                this.content.created_at = data.created_at;
+                this.content.article_id = obj1.data.article_id;
+                this.content.title = obj1.data.title;
+                this.content.topic = obj1.data.topic_name;
+                this.content.photo = obj1.data.photo;
+                this.content.content = obj1.data.content;
+                this.content.author = obj1.data.name;
+                this.content.created_at = obj1.data.created_at;
+                if(obj2.data.status == 1){
+                    this.like = true;
+                }else if(obj2.data.status == 0){
+                    this.like = false;
+                }
                 this.$Progress.finish();
-            })
+            }))
             .catch(()=>{
                 //Failed
                 this.$Progress.fail();
             })
             
-            
-        }
+        }   
     }
+    
 </script>

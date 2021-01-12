@@ -2344,19 +2344,25 @@ __webpack_require__.r(__webpack_exports__);
 
     // Create multiple requests for viewing article and like status
     this.$Progress.start();
-    axios.get("/api/user/view_article/".concat(this.$route.params.article_id)).then(function (_ref) {
-      var data = _ref.data;
+    var article_id = this.$route.params.article_id;
+    axios.all([axios.get('/api/user/view_article/' + article_id), axios.get('/api/user/like/like_status/' + article_id)]).then(axios.spread(function (obj1, obj2) {
       //Passing value into contents
-      _this2.content.article_id = data.article_id;
-      _this2.content.title = data.title;
-      _this2.content.topic = data.topic_name;
-      _this2.content.photo = data.photo;
-      _this2.content.content = data.content;
-      _this2.content.author = data.name;
-      _this2.content.created_at = data.created_at;
+      _this2.content.article_id = obj1.data.article_id;
+      _this2.content.title = obj1.data.title;
+      _this2.content.topic = obj1.data.topic_name;
+      _this2.content.photo = obj1.data.photo;
+      _this2.content.content = obj1.data.content;
+      _this2.content.author = obj1.data.name;
+      _this2.content.created_at = obj1.data.created_at;
+
+      if (obj2.data.status == 1) {
+        _this2.like = true;
+      } else if (obj2.data.status == 0) {
+        _this2.like = false;
+      }
 
       _this2.$Progress.finish();
-    })["catch"](function () {
+    }))["catch"](function () {
       //Failed
       _this2.$Progress.fail();
     });
