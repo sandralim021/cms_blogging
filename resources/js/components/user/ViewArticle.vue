@@ -40,18 +40,26 @@
         methods:{
             LikeFunction(){
                 if(this.like==false){
-                    axios.post('/api/user/like/add_like/'+this.content.article_id)
-                    .then(()=>{
+                    axios.all([
+                        axios.post('/api/user/like/add_like/'+this.content.article_id), 
+                        axios.get('/api/user/like/like_status/'+this.content.article_id)
+                    ])
+                    .then(axios.spread((obj1,obj2)=>{
                         this.like = true;
-                    })
+                        this.like_count = obj2.data.like_count;
+                    }))
                     .catch(function (error) {
                         console.log(error);
                     });
                 }else if(this.like==true){
-                    axios.delete('/api/user/like/remove_like/'+this.content.article_id)
-                    .then(()=>{
+                    axios.all([
+                        axios.delete('/api/user/like/remove_like/'+this.content.article_id), 
+                        axios.get('/api/user/like/like_status/'+this.content.article_id)
+                    ])
+                    .then(axios.spread((obj1,obj2)=>{
                         this.like = false;
-                    })
+                        this.like_count = obj2.data.like_count;
+                    }))
                     .catch(function (error) {
                         console.log(error);
                     });
@@ -61,7 +69,6 @@
         },
 
         created() {
-            // Create multiple requests for viewing article and like status
             this.$Progress.start();
             const article_id = this.$route.params.article_id;
             axios.all([
@@ -77,6 +84,7 @@
                 this.content.content = obj1.data.content;
                 this.content.author = obj1.data.name;
                 this.content.created_at = obj1.data.created_at;
+                //Determining like status
                 if(obj2.data.status == 1){
                     this.like = true;
                 }else if(obj2.data.status == 0){

@@ -2326,15 +2326,17 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.like == false) {
-        axios.post('/api/user/like/add_like/' + this.content.article_id).then(function () {
+        axios.all([axios.post('/api/user/like/add_like/' + this.content.article_id), axios.get('/api/user/like/like_status/' + this.content.article_id)]).then(axios.spread(function (obj1, obj2) {
           _this.like = true;
-        })["catch"](function (error) {
+          _this.like_count = obj2.data.like_count;
+        }))["catch"](function (error) {
           console.log(error);
         });
       } else if (this.like == true) {
-        axios["delete"]('/api/user/like/remove_like/' + this.content.article_id).then(function () {
+        axios.all([axios["delete"]('/api/user/like/remove_like/' + this.content.article_id), axios.get('/api/user/like/like_status/' + this.content.article_id)]).then(axios.spread(function (obj1, obj2) {
           _this.like = false;
-        })["catch"](function (error) {
+          _this.like_count = obj2.data.like_count;
+        }))["catch"](function (error) {
           console.log(error);
         });
       }
@@ -2343,7 +2345,6 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this2 = this;
 
-    // Create multiple requests for viewing article and like status
     this.$Progress.start();
     var article_id = this.$route.params.article_id;
     axios.all([axios.get('/api/user/view_article/' + article_id), axios.get('/api/user/like/like_status/' + article_id)]).then(axios.spread(function (obj1, obj2) {
@@ -2354,7 +2355,7 @@ __webpack_require__.r(__webpack_exports__);
       _this2.content.photo = obj1.data.photo;
       _this2.content.content = obj1.data.content;
       _this2.content.author = obj1.data.name;
-      _this2.content.created_at = obj1.data.created_at;
+      _this2.content.created_at = obj1.data.created_at; //Determining like status
 
       if (obj2.data.status == 1) {
         _this2.like = true;
