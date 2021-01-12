@@ -13,7 +13,7 @@
             <i class="far fa-comment"></i> <b>0 Comments</b>   
         </div>
         <div class="float-right">
-            <a href="" @click.prevent="LikeFunction"><i class="fa-thumbs-up" :class="[like ? 'fas' : 'far']"></i></a> <b>{{ like ? 'Liked' : 'Like'}} (0 Likes)</b>  
+            <a href="" @click.prevent="LikeFunction"><i class="fa-thumbs-up" :class="[like ? 'fas' : 'far']"></i></a> <b>{{ like ? 'Liked' : 'Like'}} ({{ like_count }} Likes)</b>  
         </div>
              
     </div>
@@ -24,6 +24,7 @@
         data(){
             return {
                 like: false,
+                like_count: '',
                 content: {
                     article_id: '',
                     title: '',
@@ -81,6 +82,7 @@
                 }else if(obj2.data.status == 0){
                     this.like = false;
                 }
+                this.like_count = obj2.data.like_count;
                 this.$Progress.finish();
             }))
             .catch(()=>{

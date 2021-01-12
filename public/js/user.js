@@ -2309,6 +2309,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       like: false,
+      like_count: '',
       content: {
         article_id: '',
         title: '',
@@ -2360,6 +2361,8 @@ __webpack_require__.r(__webpack_exports__);
       } else if (obj2.data.status == 0) {
         _this2.like = false;
       }
+
+      _this2.like_count = obj2.data.like_count;
 
       _this2.$Progress.finish();
     }))["catch"](function () {
@@ -64594,7 +64597,14 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c("b", [_vm._v(_vm._s(_vm.like ? "Liked" : "Like") + " (0 Likes)")])
+      _c("b", [
+        _vm._v(
+          _vm._s(_vm.like ? "Liked" : "Like") +
+            " (" +
+            _vm._s(_vm.like_count) +
+            " Likes)"
+        )
+      ])
     ])
   ])
 }
